@@ -21,7 +21,7 @@ static char                 g_LogTag[] = "ImGuiExample";
 static std::string          g_IniFilename = "";
 
 // Forward declarations of helper functions
-static void Init(struct android_app* app);
+static void App(struct android_app* app);
 static void Shutdown();
 static void MainLoopStep();
 static int ShowSoftKeyboardInput();
@@ -36,7 +36,7 @@ static void handleAppCmd(struct android_app* app, int32_t appCmd)
     case APP_CMD_SAVE_STATE:
         break;
     case APP_CMD_INIT_WINDOW:
-        Init(app);
+        App(app);
         break;
     case APP_CMD_TERM_WINDOW:
         Shutdown();
@@ -86,7 +86,7 @@ void android_main(struct android_app* app)
     }
 }
 
-void Init(struct android_app* app)
+void App(struct android_app* app)
 {
     if (g_Initialized)
         return;

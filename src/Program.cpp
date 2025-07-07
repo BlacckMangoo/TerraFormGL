@@ -1,26 +1,35 @@
-
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #include "App.h"
+#include "Camera.h"
 #include "ResourceManger.h"
 #include <iostream>
-#include "Camera.h"
+
+// ImGui includes
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
+
+// External camera declaration
+extern Camera camera;
+
 // GLFW function declarations
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
+void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
+void char_callback(GLFWwindow* window, unsigned int c);
 
 // The Width of the screen
-const unsigned int SCREEN_WIDTH = 1920;
+const unsigned int SCREEN_WIDTH = 1000;
 // The height of the screen
-const unsigned int SCREEN_HEIGHT = 1080;
+const unsigned int SCREEN_HEIGHT = 1000;
 
-App app(SCREEN_WIDTH, SCREEN_HEIGHT);
+App App(SCREEN_WIDTH, SCREEN_HEIGHT);
 
-void mouse_callback(GLFWwindow* window, double xpos, double ypos)
-{
-   
-}
+
 
 int main(int argc, char* argv[])
 {
@@ -35,22 +44,39 @@ int main(int argc, char* argv[])
     glfwMakeContextCurrent(window);
 
 
-    
-
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
 
+    // Setup ImGui context
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;   // Enable Gamepad Controls
+
+    // Setup ImGui style
+    ImGui::StyleColorsDark();
+
+    // Setup Platform/Renderer backends
+    ImGui_ImplGlfw_InitForOpenGL(window, false);  // false = don't install callbacks, we'll handle manually
+    ImGui_ImplOpenGL3_Init("#version 330");
+
+    // Set our own callbacks
     glfwSetKeyCallback(window, key_callback);
+    glfwSetCharCallback(window, char_callback);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwSetCursorPosCallback(window, mouse_callback);
+    glfwSetScrollCallback(window, scroll_callback);
+    glfwSetMouseButtonCallback(window, mouse_button_callback);
 
     glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	app.Init();
+	App.Init();
 
     //BASIC GAME LOOP 
 	// -----------------
@@ -67,22 +93,36 @@ int main(int argc, char* argv[])
         lastFrame = currentFrame;
         glfwPollEvents();
 
+        // Start the Dear ImGui frame
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
         // manage user input
         // -----------------
-        app.ProcessInput(deltaTime);
+        App.ProcessInput(deltaTime);
 
         // update game state
         // -----------------
-        app.Update(deltaTime);
+        App.Update(deltaTime);
 
         // render
         // ------
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // Clear both color and depth buffers
-        app.Render();
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // Fixed: Clear depth buffer too
+        App.Render();
+
+        // Render ImGui
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         glfwSwapBuffers(window);
     }
+
+    // Cleanup ImGui
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
 
     // delete all resources as loaded using the resource manager
     // ---------------------------------------------------------
@@ -94,15 +134,24 @@ int main(int argc, char* argv[])
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
+    // Forward to ImGui first
+    ImGui_ImplGlfw_KeyCallback(window, key, scancode, action, mode);
+    
+    // Check if ImGui wants to capture keyboard input
+    ImGuiIO& io = ImGui::GetIO();
+    if (io.WantCaptureKeyboard) {
+        return; // Let ImGui handle the input
+    }
+    
     // when a user presses the escape key, we set the WindowShouldClose property to true, closing the application
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
     if (key >= 0 && key < 1024)
     {
         if (action == GLFW_PRESS)
-            app.Keys[key] = true;
+            App.Keys[key] = true;
         else if (action == GLFW_RELEASE)
-            app.Keys[key] = false;
+            App.Keys[key] = false;
     }
 }
 
@@ -111,4 +160,55 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     // make sure the viewport matches the new window dimensions; note that width and 
     // height will be significantly larger than specified on retina displays.
     glViewport(0, 0, width, height);
+}
+
+void mouse_callback(GLFWwindow* window, double xpos, double ypos)
+{
+    // Forward to ImGui first
+    ImGui_ImplGlfw_CursorPosCallback(window, xpos, ypos);
+    
+    // Check if ImGui wants to capture mouse input
+    ImGuiIO& io = ImGui::GetIO();
+    if (io.WantCaptureMouse) {
+        return; // Let ImGui handle the input
+    }
+    
+    // Process mouse movement for camera
+    camera.processMouseMovement(static_cast<float>(xpos), static_cast<float>(ypos));
+}
+
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
+    // Forward to ImGui first
+    ImGui_ImplGlfw_ScrollCallback(window, xoffset, yoffset);
+    
+    // Check if ImGui wants to capture mouse input
+    ImGuiIO& io = ImGui::GetIO();
+    if (io.WantCaptureMouse) {
+        return; // Let ImGui handle the input
+    }
+    
+    // Process scroll for camera
+    camera.processMouseScroll(static_cast<float>(yoffset));
+}
+
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
+{
+    // Forward to ImGui first
+    ImGui_ImplGlfw_MouseButtonCallback(window, button, action, mods);
+    
+    // Check if ImGui wants to capture mouse input
+    ImGuiIO& io = ImGui::GetIO();
+    if (io.WantCaptureMouse) {
+        return; // Let ImGui handle the input
+    }
+    
+    // Process mouse buttons for camera
+    camera.processMouseButton(button, action);
+}
+
+void char_callback(GLFWwindow* window, unsigned int c)
+{
+    // Forward to ImGui for text input
+    ImGui_ImplGlfw_CharCallback(window, c);
 }

@@ -1,10 +1,42 @@
 ﻿#include "TerrainGenerator.h"
+#include "Noise.h"
 
-
-std::vector<float> TerrainGenerator::generateTerrain(int width, int height, float scale)
+std::vector<float> TerrainGenerator::generateTerrain(int width, int height, float scale, float frequency,
+	float amplitude, int seed, int noiseType, int fractalType, 
+	int octaves, float lacunarity, float gain)
 {
+	FastNoiseLite noise;
+	
+	// Set noise type
+	switch(noiseType) {
+		case 0: noise.SetNoiseType(FastNoiseLite::NoiseType_OpenSimplex2); break;
+		case 1: noise.SetNoiseType(FastNoiseLite::NoiseType_Perlin); break;
+		case 2: noise.SetNoiseType(FastNoiseLite::NoiseType_Value); break;
+		case 3: noise.SetNoiseType(FastNoiseLite::NoiseType_Cellular); break;
+		default: noise.SetNoiseType(FastNoiseLite::NoiseType_OpenSimplex2); break;
+	}
+	
+	// Set fractal type
+	switch(fractalType) {
+		case 0: noise.SetFractalType(FastNoiseLite::FractalType_None); break;
+		case 1: noise.SetFractalType(FastNoiseLite::FractalType_FBm); break;
+		case 2: noise.SetFractalType(FastNoiseLite::FractalType_Ridged); break;
+		case 3: noise.SetFractalType(FastNoiseLite::FractalType_PingPong); break;
+		default: noise.SetFractalType(FastNoiseLite::FractalType_None); break;
+	}
+	
+	noise.SetSeed(seed);
+	noise.SetFrequency(frequency);
+	noise.SetFractalOctaves(octaves);
+	noise.SetFractalLacunarity(lacunarity);
+	noise.SetFractalGain(gain);
+
+
     std::vector<float> terrainData;
-    terrainData.reserve((width - 1) * (height - 1) * 6 * 3); // 6 vertices (2 triangles), each 3D
+	std::vector<float> noiseData((width-1)*(height-1));
+    int index = 0; 
+
+    terrainData.reserve((width - 1) * (height - 1) * 6 * 3);
 
     for (int j = 0; j < height - 1; ++j)
     {
@@ -15,11 +47,12 @@ std::vector<float> TerrainGenerator::generateTerrain(int width, int height, floa
             float x1 = (i + 1) * scale;
             float z1 = (j + 1) * scale;
 
-            // Height at each corner
-            float y00 = sin(i * 0.2f) * cos(j * 0.2f);
-            float y10 = sin((i + 1) * 0.2f) * cos(j * 0.2f);
-            float y11 = sin((i + 1) * 0.2f) * cos((j + 1) * 0.2f);
-            float y01 = sin(i * 0.2f) * cos((j + 1) * 0.2f);
+			noiseData[index++] = noise.GetNoise(x0, z0);
+           
+			float y00 = noise.GetNoise(x0, z0) * amplitude; 
+			float y01 = noise.GetNoise(x0, z1) * amplitude; 
+			float y10 = noise.GetNoise(x1, z0) * amplitude; 
+			float y11 = noise.GetNoise(x1, z1) * amplitude; 
 
             // Triangle 1
             terrainData.insert(terrainData.end(), {

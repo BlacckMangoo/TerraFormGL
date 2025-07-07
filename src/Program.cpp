@@ -23,9 +23,9 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 void char_callback(GLFWwindow* window, unsigned int c);
 
 // The Width of the screen
-const unsigned int SCREEN_WIDTH = 1000;
+const unsigned int SCREEN_WIDTH = 1920;
 // The height of the screen
-const unsigned int SCREEN_HEIGHT = 1000;
+const unsigned int SCREEN_HEIGHT = 1080;
 
 App App(SCREEN_WIDTH, SCREEN_HEIGHT);
 

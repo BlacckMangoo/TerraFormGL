@@ -70,12 +70,11 @@ void MeshRenderer::initTerrainData()
 }
 
 void MeshRenderer::GenerateTerrain(int width, int height, float scale, float frequency,
-	float amplitude, int seed, int noiseType, int fractalType, 
-	int octaves, float lacunarity, float gain)
+	float amplitude, float lacunarity)
 {
     // Generate terrain data using TerrainGenerator
     terrainVertices = terrainGen.generateTerrain(width, height, scale, frequency, 
-		amplitude, seed, noiseType, fractalType, octaves, lacunarity, gain);
+		amplitude, lacunarity);
     terrainVertexCount = terrainVertices.size() / 3; // 3 components per vertex (x, y, z)
 
     // Bind and upload terrain data to GPU
@@ -112,7 +111,7 @@ void MeshRenderer::DrawTerrain(RenderModes mode, float dt, const Camera& camera)
     // Matrices
     glm::mat4 model = glm::mat4(1.0f); // Keep terrain static, no rotation
     glm::mat4 view = glm::lookAt(camera.cameraPos, camera.cameraPos + camera.cameraFront, camera.cameraUp);
-    glm::mat4 projection = glm::perspective(glm::radians(camera.getFOV()), 1.0f, 0.1f, 100.0f);
+    glm::mat4 projection = glm::perspective(glm::radians(camera.getFOV()), 16.0f/9.0f, 0.01f, 2000.0f);
 
     glm::mat4 mvp = projection * view * model;
 

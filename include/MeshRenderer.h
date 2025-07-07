@@ -26,8 +26,7 @@ public:
     void Draw(RenderModes mode, float dt, const Camera& camera );
     void DrawTerrain(RenderModes mode, float dt, const Camera& camera);
     void GenerateTerrain(int width, int height, float scale, float frequency, 
-		float amplitude, int seed, int noiseType, int fractalType, 
-		int octaves, float lacunarity, float gain);
+		float amplitude, float lacunarity);
 private:
     // Render state
     Shader       shader;

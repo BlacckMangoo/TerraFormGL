@@ -14,7 +14,7 @@ Camera::Camera()
 
 void Camera::processInput(GLFWwindow* window, float deltaTime)
 {
-    float cameraSpeed = 2.5f * deltaTime;
+    float cameraSpeed = 25.0f * deltaTime;
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         cameraPos += cameraSpeed * cameraFront;
@@ -94,8 +94,8 @@ void Camera::processMouseScroll(float yoffset)
     // Clamp FOV to reasonable limits
     if (fov < 1.0f)
         fov = 1.0f;
-    if (fov > 120.0f)
-        fov = 120.0f;
+    if (fov > 200.0f)
+        fov = 200.0f;
 }
 
 void Camera::processMouseButton(int button, int action)

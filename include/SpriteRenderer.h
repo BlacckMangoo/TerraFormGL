@@ -22,5 +22,5 @@ private:
     Shader       shader; 
     unsigned int quadVAO;
     // Initializes and configures the quad's buffer and vertex attributes
-    void initRenderData();
+    void initTerrainRenderData();
 };

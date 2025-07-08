@@ -4,7 +4,7 @@
 SpriteRenderer::SpriteRenderer(Shader& shader)
 {
     this->shader = shader;
-    this->initRenderData();
+    this->initTerrainRenderData();
 }
 
 SpriteRenderer::~SpriteRenderer()
@@ -38,7 +38,7 @@ void SpriteRenderer::DrawSprite(Texture2D& texture, glm::vec2 position, glm::vec
     glBindVertexArray(0);
 }
 
-void SpriteRenderer::initRenderData()
+void SpriteRenderer::initTerrainRenderData()
 {
     // configure VAO/VBO
     unsigned int VBO;

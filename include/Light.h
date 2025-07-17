@@ -21,8 +21,7 @@ public:
     // Destructor
     ~Light();
 
-    // Initialize the light cube geometry
-    void Init();
+
     
     // Render the light cube
     void Render( Shader& lightShader, const Camera& camera);

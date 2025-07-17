@@ -1,8 +1,11 @@
 #include "Light.h"
 
 Light::Light(const glm::vec3& pos, const glm::vec3& col, float lightScale)
-    : position(pos), color(col), scale(lightScale), VAO(0), VBO(0), initialized(false)
+    : position(pos), color(col), scale(lightScale), VAO(0), VBO(0),EBO(0), initialized(false)
 {
+	// Initialize the light cube geometry
+	setupGeometry();
+	initialized = true;
 }
 
 Light::~Light()
@@ -13,11 +16,6 @@ Light::~Light()
     }
 }
 
-void Light::Init()
-{
-    setupGeometry();
-    initialized = true;
-}
 
 void Light::setupGeometry()
 {
@@ -108,6 +106,8 @@ void Light::Render( Shader& lightShader, const Camera& camera)
     glUniformMatrix4fv(mvpLoc, 1, GL_FALSE, glm::value_ptr(mvp));
 
     lightShader.SetVector3f("lightColor", color.x, color.y, color.z);
+	lightShader.SetVector3f("lightPosition", position.x, position.y, position.z);
+	lightShader.SetFloat("lightScale", scale);
 
     // Render the cube
     glBindVertexArray(VAO);

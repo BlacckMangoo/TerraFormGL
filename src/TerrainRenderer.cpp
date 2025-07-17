@@ -4,7 +4,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "Camera.h"
 #include "TerrainGenerator.h"
-
+#include <Light.h>
 
 
 TerrainRenderer::TerrainRenderer(Shader& shader)
@@ -67,23 +67,16 @@ void TerrainRenderer::initTerrainData()
     // Initialize terrain VAO and VBO (empty for now)
     glGenVertexArrays(1, &this->terrainVAO);
     glGenBuffers(1, &this->terrainVBO);
+    void DrawTerrain(RenderModes mode, float dt, const Camera& camera, const std::vector<Light*>& lights);
 }
 
 void TerrainRenderer::GenerateTerrain(int width, int height, float scale, float frequency,
-	float amplitude, float lacunarity, int noiseType, int fractalType, 
-    int fractalOctaves, float fractalGain, float fractalWeightedStrength, 
-    float fractalPingPongStrength, int cellularDistanceFunction, 
-    int cellularReturnType, float cellularJitter, bool useDomainWarp, 
-    int domainWarpType, float domainWarpAmp, float domainWarpFreq,
-    float time, bool enableDrift)
+    float amplitude)
 {
 
     // Generate terrain data using TerrainGenerator
-    terrainVertices = terrainGen.generateTerrain(width, height, scale, frequency, 
-		amplitude, lacunarity, noiseType, fractalType, fractalOctaves, fractalGain, 
-        fractalWeightedStrength, fractalPingPongStrength, cellularDistanceFunction, 
-        cellularReturnType, cellularJitter, useDomainWarp, domainWarpType, 
-        domainWarpAmp, domainWarpFreq, time, enableDrift);
+    terrainVertices = terrainGen.generateTerrain(width, height, scale, frequency,
+        amplitude);
     terrainVertexCount = terrainVertices.size() / 6; // 6 components per vertex (x, y, z, nx, ny, nz)
 
     // Bind and upload terrain data to GPU
@@ -103,10 +96,10 @@ void TerrainRenderer::GenerateTerrain(int width, int height, float scale, float 
     glBindVertexArray(0);
 
     terrainGenerated = true;
-}
+};
 
-void TerrainRenderer::DrawTerrain(RenderModes mode, float dt, const Camera& camera, 
-    const glm::vec3& lightPos, const glm::vec3& lightColor)
+
+void TerrainRenderer::DrawTerrain(RenderModes mode, float dt, const Camera& camera, std::vector<Light*> lights)
 {
     if (!terrainGenerated) {
         return; // No terrain to render
@@ -136,10 +129,30 @@ void TerrainRenderer::DrawTerrain(RenderModes mode, float dt, const Camera& came
     GLuint modelLoc = glGetUniformLocation(shader.ID, "u_Model");
     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
-    // Set lighting uniforms using passed parameters
-    shader.SetVector3f("objectColor", 0.5f, 0.8f, 0.3f); // Green terrain color
-    shader.SetVector3f("lightColor", lightColor.x, lightColor.y, lightColor.z); 
-    shader.SetVector3f("lightPos", lightPos.x, lightPos.y, lightPos.z);
+	glm::vec3 lightColor = glm::vec3(0, 0, 0);
+
+    //combine color from all lights 
+
+	for (int i = 0; i < lights.size(); i++)
+	{
+		lightColor += lights[i]->color;
+	}
+
+	shader.SetVector3f("lightColor", lightColor);
+	shader.SetVector3f("objectColor", glm::vec3(0.5f, 0.5f, 0.5f)); // Set a default object color
+	shader.SetVector3f("lightPos", glm::vec3(0.0f, 10.0f, 0.0f)); // Default light position
+
+
+
+
+	for (int i = 0; i  < lights.size(); i++)
+	{
+		shader.SetVector3f("objectColor", glm::vec3(70,70,70));
+		shader.SetVector3f("lightColor", lights[i]->color);
+		shader.SetVector3f("lightPos", lights[i]->position);
+	}
+
+
 
     glBindVertexArray(terrainVAO);
     glDrawArrays(GL_TRIANGLES, 0, terrainVertexCount);

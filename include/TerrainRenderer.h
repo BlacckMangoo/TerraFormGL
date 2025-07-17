@@ -2,7 +2,7 @@
 #include "Shader.h"
 #include "Camera.h"
 #include "TerrainGenerator.h"
-
+#include "Light.h"
 enum RenderModes
 {
 	RENDER_MODE_WIRE_FRAME,
@@ -25,19 +25,18 @@ public:
 
     void Draw(RenderModes mode, float dt, const Camera& camera );
     void DrawTerrain(RenderModes mode, float dt, const Camera& camera, 
-        const glm::vec3& lightPos, const glm::vec3& lightColor);
+       std::vector<Light*> lights);
     void GenerateTerrain(int width, int height, float scale, float frequency, 
-        float amplitude, float lacunarity, int noiseType, int fractalType, 
-        int fractalOctaves, float fractalGain, float fractalWeightedStrength, 
-        float fractalPingPongStrength, int cellularDistanceFunction, 
-        int cellularReturnType, float cellularJitter, bool useDomainWarp, 
-        int domainWarpType, float domainWarpAmp, float domainWarpFreq,
-        float time, bool enableDrift);
-private:
+
+        float amplitude);
     // Render state
     Shader       shader;
     unsigned int    VAO;
     unsigned int VBO;
+private:
+    
+
+   
 
     // Terrain data
     TerrainGenerator terrainGen;

@@ -6,10 +6,8 @@ layout(location = 1) in vec3 aNormal;
 out vec3 Normal;
 out vec3 FragPos; 
 
-uniform vec3 lightPos; 
 uniform mat4 u_Model;
 uniform mat4 u_MVP;
-uniform vec3 u_LightPos;
 
 void main() {
     gl_Position = u_MVP * vec4(aPos, 1.0);

@@ -1,11 +1,9 @@
 #include "App.h"
 #include "TerrainRenderer.h"
 #include "ResourceManger.h"
-#include "Camera.h"
+#include <UiManager.h>
 #include "Light.h"
-#include "imgui.h"
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
+
 #include <glm/glm.hpp>
 
 TerrainRenderer* terrainRenderer;
@@ -21,6 +19,8 @@ glm::vec3 lightPosition[3] = {
 	glm::vec3(-10.0f, 10.0f, -10.0f)
 };;
 
+UiManager uiManager;
+
 
 
 App::App(unsigned int width, unsigned int height)
@@ -31,10 +31,10 @@ App::App(unsigned int width, unsigned int height)
 
 App::~App()
 {
-	// Cleanup ImGui
-	ImGui_ImplOpenGL3_Shutdown();
-	ImGui_ImplGlfw_Shutdown();
-	ImGui::DestroyContext();
+	//init ui 
+	uiManager.Close();
+
+
 
 	// Cleanup renderers
 	delete terrainRenderer;
@@ -64,8 +64,8 @@ void App::Init()
 
 	
 	// Generate initial terrain using class parameters
-	terrainRenderer->GenerateTerrain(terrainWidth, terrainHeight, terrainScale, terrainFrequency,
-		terrainAmplitude);
+	terrainRenderer->GenerateTerrain(uiManager.terrainWidth, uiManager.terrainHeight, uiManager.terrainAmplitude,
+		uiManager.terrainScale, uiManager.terrainFrequency);
 	
 	glEnable(GL_DEPTH_TEST);
 
@@ -77,10 +77,11 @@ void App::Update(float dt)
 
 
 	// Check if terrain needs to be regenerated
-	if (regenerateTerrain) {
-		terrainRenderer->GenerateTerrain(terrainWidth, terrainHeight, terrainScale, terrainFrequency,
-			terrainAmplitude);
-		regenerateTerrain = false;
+	if (uiManager.regenerateTerrain) {
+		// Regenerate terrain with current parameters
+		terrainRenderer->GenerateTerrain(uiManager.terrainWidth, uiManager.terrainHeight, uiManager.terrainScale,
+			uiManager.terrainFrequency, uiManager.terrainAmplitude);
+		uiManager.regenerateTerrain = false; // Reset flag
 	}
 }
 
@@ -97,7 +98,7 @@ void App::Render()
 	
 	// Convert render mode to RenderModes enum
 	RenderModes mode = RENDER_MODE_WIRE_FRAME;
-	switch(renderMode) {
+	switch(uiManager.renderMode) {
 		case 0: mode = RENDER_MODE_WIRE_FRAME; break;
 		case 1: mode = RENDER_MODE_FILL; break;
 		case 2: mode = RENDER_MODE_POINTS; break;
@@ -114,63 +115,6 @@ void App::Render()
 	}
 	
 	
-	// Render ImGui UI
-	RenderUI();
+	uiManager.RenderUi(camera);
 }
 
-void App::RenderUI()
-{
-	ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_FirstUseEver);
-	ImGui::SetNextWindowSize(ImVec2(380, 700), ImGuiCond_FirstUseEver);
-	
-	ImGui::Begin("Terrain Controls");
-	
-	ImGui::Text("Basic Terrain Parameters");
-	ImGui::Separator();
-	
-	if (ImGui::SliderInt("Width", &terrainWidth, 1, 200)) {
-		regenerateTerrain = true;
-	}
-	if (ImGui::SliderInt("Height", &terrainHeight, 1, 200)) {
-		regenerateTerrain = true;
-	}
-	if (ImGui::SliderFloat("Scale", &terrainScale, 0.1f, 5.0f)) {
-		regenerateTerrain = true;
-	}
-	if (ImGui::SliderFloat("Frequency", &terrainFrequency, 0.01f, 0.5f)) {
-		regenerateTerrain = true;
-	}
-	if (ImGui::SliderFloat("Amplitude", &terrainAmplitude, 0.0f, 20.0f)) {
-		regenerateTerrain = true;
-	}
-
-	
-	
-	
-	ImGui::Separator();
-	ImGui::Text("Render Settings");
-	ImGui::Separator();
-	
-	const char* renderModes[] = { "Wireframe", "Fill", "Points" };
-	ImGui::Combo("Render Mode", &renderMode, renderModes, 3);
-	
-	if (ImGui::Button("Regenerate Terrain", ImVec2(-1, 0))) {
-		regenerateTerrain = true;
-	}
-
-	
-	
-	
-	if (ImGui::Button("Reset Camera", ImVec2(-1, 0))) {
-		camera.cameraPos = glm::vec3(25.0f, 15.0f, 25.0f);
-		camera.cameraFront = glm::vec3(-0.5f, -0.3f, -0.5f);
-		camera.yaw = -90.0f;
-		camera.pitch = 0.0f;
-		camera.fov = 45.0f;
-		camera.firstMouse = true;
-	}
-
-	ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
-	
-	ImGui::End();
-}

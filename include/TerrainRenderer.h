@@ -3,14 +3,7 @@
 #include "Camera.h"
 #include "TerrainGenerator.h"
 #include "Light.h"
-enum RenderModes
-{
-	RENDER_MODE_WIRE_FRAME,
-	RENDER_MODE_FILL,
-	RENDER_MODE_POINTS
-
-};
-
+#include "UiManager.h"
 
 class TerrainRenderer {
 public:
@@ -33,7 +26,7 @@ public:
     Shader       shader;
     unsigned int    VAO;
     unsigned int VBO;
-private:
+    private:
     
 
    

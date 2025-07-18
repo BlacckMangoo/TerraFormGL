@@ -5,7 +5,7 @@
 #include "Camera.h"
 #include "TerrainGenerator.h"
 #include <Light.h>
-
+#include "UiManager.h"
 
 TerrainRenderer::TerrainRenderer(Shader& shader)
 {
@@ -129,30 +129,20 @@ void TerrainRenderer::DrawTerrain(RenderModes mode, float dt, const Camera& came
     GLuint modelLoc = glGetUniformLocation(shader.ID, "u_Model");
     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
-	glm::vec3 lightColor = glm::vec3(0, 0, 0);
-
-    //combine color from all lights 
-
-	for (int i = 0; i < lights.size(); i++)
-	{
-		lightColor += lights[i]->color;
-	}
-
-	shader.SetVector3f("lightColor", lightColor);
-	shader.SetVector3f("objectColor", glm::vec3(0.5f, 0.5f, 0.5f)); // Set a default object color
-	shader.SetVector3f("lightPos", glm::vec3(0.0f, 10.0f, 0.0f)); // Default light position
-
-
-
-
-	for (int i = 0; i  < lights.size(); i++)
-	{
-		shader.SetVector3f("objectColor", glm::vec3(70,70,70));
-		shader.SetVector3f("lightColor", lights[i]->color);
-		shader.SetVector3f("lightPos", lights[i]->position);
-	}
-
-
+    // Pass all light positions and colors to the shader (max 3 lights)
+    int numLights = std::min(3, (int)lights.size());
+    glm::vec3 lightPositions[3];
+    glm::vec3 lightColors[3];
+    for (int i = 0; i < numLights; ++i) {
+        lightPositions[i] = lights[i]->position;
+        lightColors[i] = lights[i]->color; // FIX: No division by 255.0f
+    }
+    shader.SetInteger("numLights", numLights);
+    for (int i = 0; i < numLights; ++i) {
+        shader.SetVector3f(("lightPositions[" + std::to_string(i) + "]").c_str(), lightPositions[i]);
+        shader.SetVector3f(("lightColors[" + std::to_string(i) + "]").c_str(), lightColors[i]);
+    }
+    shader.SetVector3f("objectColor", glm::vec3(0.5f)); // Mid-gray
 
     glBindVertexArray(terrainVAO);
     glDrawArrays(GL_TRIANGLES, 0, terrainVertexCount);

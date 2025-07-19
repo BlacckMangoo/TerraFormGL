@@ -10,7 +10,7 @@ uniform vec3 lightPositions[3];
 uniform vec3 lightColors[3];
 
 void main() {
-    vec3 norm = normalize(Normal)*-1.0;
+    vec3 norm = normalize(Normal);
     vec3 result = vec3(0.0);
     float ambientStrength = 0.1;
     for (int i = 0; i < numLights; ++i) {

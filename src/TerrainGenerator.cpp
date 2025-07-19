@@ -44,12 +44,12 @@ std::vector<float> TerrainGenerator::generateTerrain(int width, int height, floa
             // Triangle 1: v0, v1, v2
             glm::vec3 edge1_1 = v1 - v0;
             glm::vec3 edge2_1 = v2 - v0;
-            glm::vec3 normal1 = glm::normalize(glm::cross(edge1_1, edge2_1));
+            glm::vec3 normal1 = -glm::normalize(glm::cross(edge1_1, edge2_1));
 
             // Triangle 2: v2, v3, v0
             glm::vec3 edge1_2 = v3 - v2;
             glm::vec3 edge2_2 = v0 - v2;
-            glm::vec3 normal2 = glm::normalize(glm::cross(edge1_2, edge2_2));
+            glm::vec3 normal2 = -glm::normalize(glm::cross(edge1_2, edge2_2));
 
             // Add first triangle: v0, v1, v2
             terrainData.insert(terrainData.end(), {

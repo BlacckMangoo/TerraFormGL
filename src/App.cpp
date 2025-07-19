@@ -14,9 +14,9 @@ glm::vec3 lighcolor[3] = { glm::vec3(1.0f, 0.5f, 0.5f), // Light 1 color
 	glm::vec3(0.5f, 0.5f, 1.0f)  // Light 3 color
 };
 glm::vec3 lightPosition[3] = {
-	glm::vec3(0.0f, 10.0f, 0.0f),
-	glm::vec3(10.0f, 10.0f, 10.0f),
-	glm::vec3(-10.0f, 10.0f, -10.0f)
+	glm::vec3(0.0f, 10.0f, 40.0f),
+	glm::vec3(60.0f, 10.0f, 100.0f),
+	glm::vec3(40.0f, 10.0f, 80.0f)
 };;
 
 UiManager uiManager;

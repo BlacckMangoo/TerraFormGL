@@ -16,7 +16,8 @@ add_subdirectory(thirdparty/glad)				#opengl loader
 add_subdirectory(thirdparty/stb_image)			#loading immaged
 add_subdirectory(thirdparty/stb_truetype)		#loading ttf files
 add_subdirectory(thirdparty/glm)				#math
-add_subdirectory(thirdparty/imgui-docking)		#ui
+add_subdirectory(thirdparty/imgui-docking)
+add_subdirectory(thirdparty/assimp)#ui
 
 
 # Define MY_SOURCES to be a list of all the source files for my game 
@@ -31,7 +32,7 @@ target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC RESOURCES_PATH="${CMAK
 #target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC RESOURCES_PATH="./resources/") # Uncomment this line to setup the ASSETS_PATH macro to the final assets directory when you share the game
 
 
-target_sources("${CMAKE_PROJECT_NAME}" PRIVATE ${MY_SOURCES}  "src/Program.cpp" "src/ResourceManager.cpp" "src/Shader.cpp" "src/SpriteRenderer.cpp" "src/Texture.cpp" "include/App.h" "src/App.cpp"   "src/TerrainRenderer.cpp" "include/TerrainRenderer.h"   "include/Camera.h" "src/Camera.cpp" "src/TerrainGenerator.cpp"  "include/Noise.h"  "include/Light.h" "include/Object.h" "include/TerrainGenerator.h" "src/UiManager.cpp" "include/UiManager.h")
+target_sources("${CMAKE_PROJECT_NAME}" PRIVATE ${MY_SOURCES}  "src/Program.cpp" "src/ResourceManager.cpp" "src/Shader.cpp" "src/SpriteRenderer.cpp" "src/Texture.cpp" "include/App.h" "src/App.cpp"   "src/TerrainRenderer.cpp" "include/TerrainRenderer.h"   "include/Camera.h" "src/Camera.cpp" "src/TerrainGenerator.cpp"  "include/Noise.h"  "include/Light.h" "include/Object.h" "include/TerrainGenerator.h" "src/UiManager.cpp" "include/UiManager.h" "include/Mesh.h" "include/Model.h" "include/test.h")
 
 
 if(MSVC) # If using the VS compiler...
@@ -51,5 +52,5 @@ target_include_directories("${CMAKE_PROJECT_NAME}" PUBLIC "${CMAKE_CURRENT_SOURC
 
 
 target_link_libraries("${CMAKE_PROJECT_NAME}" PRIVATE glm glfw 
-	glad stb_image stb_truetype imgui)
+	glad stb_image stb_truetype imgui assimp)
 

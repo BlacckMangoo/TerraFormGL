@@ -39,6 +39,7 @@ int main(int argc, char* argv[])
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     glfwWindowHint(GLFW_RESIZABLE, false);
+    glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
 
     GLFWwindow* window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "SimXsycs", nullptr, nullptr);
     glfwMakeContextCurrent(window);
@@ -54,14 +55,14 @@ int main(int argc, char* argv[])
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;   // Enable Gamepad Controls
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; 
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;   
 
     // Setup ImGui style
     ImGui::StyleColorsDark();
 
     // Setup Platform/Renderer backends
-    ImGui_ImplGlfw_InitForOpenGL(window, false);  // false = don't install callbacks, we'll handle manually
+    ImGui_ImplGlfw_InitForOpenGL(window, false); 
     ImGui_ImplOpenGL3_Init("#version 330");
 
     // Set our own callbacks
@@ -146,13 +147,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     // when a user presses the escape key, we set the WindowShouldClose property to true, closing the application
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
-    if (key >= 0 && key < 1024)
-    {
-        if (action == GLFW_PRESS)
-            App.Keys[key] = true;
-        else if (action == GLFW_RELEASE)
-            App.Keys[key] = false;
-    }
+  
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)

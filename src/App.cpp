@@ -9,14 +9,16 @@
 TerrainRenderer* terrainRenderer;
 Camera camera; 
 std::vector<Light*> lights;
-glm::vec3 lighcolor[3] = { glm::vec3(1.0f, 0.5f, 0.5f), // Light 1 color
+std::vector<glm::vec3> lightColor = {glm::vec3(1.0f, 0.5f, 0.5f), // Light 1 color
 	glm::vec3(0.5f, 1.0f, 0.5f), // Light 2 color
-	glm::vec3(0.5f, 0.5f, 1.0f)  // Light 3 color
+	glm::vec3(0.5f, 0.5f, 1.0f),  // Light 3 color
+	glm::vec3(1.0f, 1.0f, 0.5f) // Light 4 color
 };
-glm::vec3 lightPosition[3] = {
-	glm::vec3(0.0f, 10.0f, 40.0f),
+std::vector<glm::vec3>lightPosition = {
+	glm::vec3(7.0f, 10.0f, 40.0f),
 	glm::vec3(60.0f, 10.0f, 100.0f),
-	glm::vec3(40.0f, 10.0f, 80.0f)
+	glm::vec3(80.0f, 10.0f, 80.0f),
+	glm::vec3(50.0f, 10.0f, 60.0f)
 };;
 
 UiManager uiManager;
@@ -24,7 +26,7 @@ UiManager uiManager;
 
 
 App::App(unsigned int width, unsigned int height)
-    : State(GAME_ACTIVE), Keys(), Width(width), Height(height)
+    : Width(width), Height(height)
 {
 
 }
@@ -33,13 +35,6 @@ App::~App()
 {
 	//init ui 
 	uiManager.Close();
-
-
-
-	// Cleanup renderers
-	delete terrainRenderer;
-	
-
 }
 
 void App::Init()
@@ -52,10 +47,14 @@ void App::Init()
 	Shader meshShader = ResourceManager::GetShader("mesh");
 
 	
-	terrainRenderer = new TerrainRenderer(meshShader);
 
-	for (int i = 0; i < 3; i++) {
-		Light* light = new Light(lightPosition[i], lighcolor[i], 1.0f);
+	void* raw = operator new(sizeof(TerrainRenderer));
+	TerrainRenderer* terrainRenderer = static_cast<TerrainRenderer*>(raw);
+	new (terrainRenderer) TerrainRenderer(meshShader);
+
+
+	for (int i = 0; i < lightColor.size(); i++) {
+		Light* light = new Light(lightPosition[i], lightColor[i], 1.0f);
 		lights.push_back(light);
 	};
 	
@@ -103,10 +102,7 @@ void App::Render()
 		case 1: mode = RENDER_MODE_FILL; break;
 		case 2: mode = RENDER_MODE_POINTS; break;
 	}
-	
-
-	
-	terrainRenderer->DrawTerrain(mode, time, camera, lights);
+	terrainRenderer->DrawTerrain(mode, camera, lights);
 	
 	// Render the light source cube
 	Shader lightShader = ResourceManager::GetShader("light");

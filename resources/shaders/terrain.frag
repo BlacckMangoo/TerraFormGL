@@ -6,8 +6,9 @@ in vec3 FragPos;
 
 uniform vec3 objectColor;
 uniform int numLights;
-uniform vec3 lightPositions[3];
-uniform vec3 lightColors[3];
+#define MAX_LIGHTS 16
+uniform vec3 lightPositions[MAX_LIGHTS];
+uniform vec3 lightColors[MAX_LIGHTS];
 
 void main() {
     vec3 norm = normalize(Normal);

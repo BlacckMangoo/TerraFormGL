@@ -34,7 +34,7 @@ void TerrainRenderer::initTerrainRenderData()
     glGenBuffers(1, &this->VBO);
 }
 
-void TerrainRenderer::Draw(RenderModes mode, float dt ,const  Camera& camera )
+void TerrainRenderer::Draw(RenderModes mode ,const  Camera& camera )
 {
     // Set polygon mode
     if (mode == RENDER_MODE_WIRE_FRAME)
@@ -47,7 +47,7 @@ void TerrainRenderer::Draw(RenderModes mode, float dt ,const  Camera& camera )
     shader.Use();
 
     // Matrices
-	glm::mat4 model = glm::rotate(glm::mat4(1.0f), dt, glm::vec3(1.0f, 1.0f, 0.0f));// Rotate around Z-axis
+	glm::mat4 model = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     glm::mat4 view =  glm::lookAt(camera.cameraPos, camera.cameraPos + camera.cameraFront, camera.cameraUp); // Camera view matrix
     glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 100.0f); // You can pass aspect
 
@@ -67,12 +67,10 @@ void TerrainRenderer::initTerrainData()
     // Initialize terrain VAO and VBO (empty for now)
     glGenVertexArrays(1, &this->terrainVAO);
     glGenBuffers(1, &this->terrainVBO);
-    void DrawTerrain(RenderModes mode, float dt, const Camera& camera, const std::vector<Light*>& lights);
+    void DrawTerrain(RenderModes mode, const Camera& camera, const std::vector<Light*>& lights);
 }
 
-void TerrainRenderer::GenerateTerrain(int width, int height, float scale, float frequency,
-    float amplitude)
-{
+void TerrainRenderer::GenerateTerrain(int width, int height, float scale, float frequency, float amplitude){
 
     // Generate terrain data using TerrainGenerator
     terrainVertices = terrainGen.generateTerrain(width, height, scale, frequency,
@@ -99,8 +97,7 @@ void TerrainRenderer::GenerateTerrain(int width, int height, float scale, float 
 };
 
 
-void TerrainRenderer::DrawTerrain(RenderModes mode, float dt, const Camera& camera, std::vector<Light*> lights)
-{
+void TerrainRenderer::DrawTerrain(RenderModes mode, const Camera& camera, std::vector<Light*> lights){
     if (!terrainGenerated) {
         return; // No terrain to render
     }
@@ -121,21 +118,20 @@ void TerrainRenderer::DrawTerrain(RenderModes mode, float dt, const Camera& came
     glm::mat4 projection = glm::perspective(glm::radians(camera.getFOV()), 16.0f/9.0f, 0.01f, 2000.0f);
     glm::mat4 mvp = projection * view * model;
 
-    // Upload MVP matrix to shader
     GLuint mvpLoc = glGetUniformLocation(shader.ID, "u_MVP");
     glUniformMatrix4fv(mvpLoc, 1, GL_FALSE, glm::value_ptr(mvp));
 
-    // Upload model matrix to shader
     GLuint modelLoc = glGetUniformLocation(shader.ID, "u_Model");
     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
-    // Pass all light positions and colors to the shader (max 3 lights)
-    int numLights = std::min(3, (int)lights.size());
-    glm::vec3 lightPositions[3];
-    glm::vec3 lightColors[3];
+
+    const int MAX_LIGHTS = 16; // Must match shader
+    int numLights = std::min((int)lights.size(), MAX_LIGHTS);
+    std::vector<glm::vec3> lightPositions(numLights);
+    std::vector<glm::vec3> lightColors(numLights);
     for (int i = 0; i < numLights; ++i) {
         lightPositions[i] = lights[i]->position;
-        lightColors[i] = lights[i]->color; // FIX: No division by 255.0f
+        lightColors[i] = lights[i]->color;
     }
     shader.SetInteger("numLights", numLights);
     for (int i = 0; i < numLights; ++i) {

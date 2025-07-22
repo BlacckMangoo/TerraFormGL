@@ -9,8 +9,6 @@ std::vector<float> TerrainGenerator::generateTerrain(int width, int height, floa
 	float amplitude)
 {
     FastNoiseLite noise;
-    
-    // Set basic noise parameters
 	noise.SetFrequency(frequency);
 	
     std::vector<float> terrainData;
@@ -40,7 +38,7 @@ std::vector<float> TerrainGenerator::generateTerrain(int width, int height, floa
             glm::vec3 v2(x1, y11, z1);
             glm::vec3 v3(x0, y01, z1);
 
-            // Calculate normals for the two triangles
+            
             // Triangle 1: v0, v1, v2
             glm::vec3 edge1_1 = v1 - v0;
             glm::vec3 edge2_1 = v2 - v0;

@@ -14,8 +14,10 @@ class Shader
 public:
     // state
     unsigned int ID;
+    
     // constructor
-
+    Shader() : ID(0) {}
+    
     // sets the current shader as active
     Shader& Use();
     // compiles the shader from given source code

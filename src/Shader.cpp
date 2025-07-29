@@ -5,6 +5,10 @@
 
 Shader& Shader::Use()
 {
+    if (ID == 0) {
+        std::cout << "Error: Attempting to use uninitialized shader" << std::endl;
+        return *this;
+    }
     glUseProgram(this->ID);
     return *this;
 }
@@ -49,13 +53,23 @@ void Shader::SetFloat(const char* name, float value, bool useShader)
 {
     if (useShader)
         this->Use();
-    glUniform1f(glGetUniformLocation(this->ID, name), value);
+    GLint location = glGetUniformLocation(this->ID, name);
+    if (location != -1) {
+        glUniform1f(location, value);
+    } else {
+        std::cout << "Warning: Uniform '" << name << "' not found in shader" << std::endl;
+    }
 }
 void Shader::SetInteger(const char* name, int value, bool useShader)
 {
     if (useShader)
         this->Use();
-    glUniform1i(glGetUniformLocation(this->ID, name), value);
+    GLint location = glGetUniformLocation(this->ID, name);
+    if (location != -1) {
+        glUniform1i(location, value);
+    } else {
+        std::cout << "Warning: Uniform '" << name << "' not found in shader" << std::endl;
+    }
 }
 void Shader::SetVector2f(const char* name, float x, float y, bool useShader)
 {
@@ -79,7 +93,12 @@ void Shader::SetVector3f(const char* name, const glm::vec3& value, bool useShade
 {
     if (useShader)
         this->Use();
-    glUniform3f(glGetUniformLocation(this->ID, name), value.x, value.y, value.z);
+    GLint location = glGetUniformLocation(this->ID, name);
+    if (location != -1) {
+        glUniform3f(location, value.x, value.y, value.z);
+    } else {
+        std::cout << "Warning: Uniform '" << name << "' not found in shader" << std::endl;
+    }
 }
 void Shader::SetVector4f(const char* name, float x, float y, float z, float w, bool useShader)
 {
@@ -97,7 +116,12 @@ void Shader::SetMatrix4(const char* name, const glm::mat4& matrix, bool useShade
 {
     if (useShader)
         this->Use();
-    glUniformMatrix4fv(glGetUniformLocation(this->ID, name), 1, false, glm::value_ptr(matrix));
+    GLint location = glGetUniformLocation(this->ID, name);
+    if (location != -1) {
+        glUniformMatrix4fv(location, 1, false, glm::value_ptr(matrix));
+    } else {
+        std::cout << "Warning: Uniform '" << name << "' not found in shader" << std::endl;
+    }
 }
 
 

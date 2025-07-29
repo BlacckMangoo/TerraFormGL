@@ -3,7 +3,7 @@
 
 #include "App.h"
 #include "Camera.h"
-#include "ResourceManger.h"
+#include "ResourceManager.h"
 #include <iostream>
 
 // ImGui includes
@@ -11,8 +11,7 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 
-// External camera declaration
-extern Camera camera;
+// Camera is now a member of App class
 
 // GLFW function declarations
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -169,7 +168,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     }
     
     // Process mouse movement for camera
-    camera.processMouseMovement(static_cast<float>(xpos), static_cast<float>(ypos));
+    App.camera.processMouseMovement(static_cast<float>(xpos), static_cast<float>(ypos));
 }
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
@@ -184,7 +183,7 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
     }
     
     // Process scroll for camera
-    camera.processMouseScroll(static_cast<float>(yoffset));
+    App.camera.processMouseScroll(static_cast<float>(yoffset));
 }
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
@@ -199,7 +198,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
     }
     
     // Process mouse buttons for camera
-    camera.processMouseButton(button, action);
+    App.camera.processMouseButton(button, action);
 }
 
 void char_callback(GLFWwindow* window, unsigned int c)

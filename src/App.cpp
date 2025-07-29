@@ -1,38 +1,43 @@
 #include "App.h"
 #include "TerrainRenderer.h"
-#include "ResourceManger.h"
+#include "ResourceManager.h"
 #include <UiManager.h>
 #include "Light.h"
+#include <iostream>
 
-#include <glm/glm.hpp>
-
-TerrainRenderer* terrainRenderer;
-Camera camera; 
-std::vector<Light*> lights;
-std::vector<glm::vec3> lightColor = {glm::vec3(1.0f, 0.5f, 0.5f), // Light 1 color
-	glm::vec3(0.5f, 1.0f, 0.5f), // Light 2 color
-	glm::vec3(0.5f, 0.5f, 1.0f),  // Light 3 color
-	glm::vec3(1.0f, 1.0f, 0.5f) // Light 4 color
+// Light positions and colors
+std::vector<glm::vec3> lightPosition = {
+	glm::vec3(2.0f, 4.0f, 2.0f),
+	glm::vec3(-2.0f, 3.0f, -1.0f),
+	glm::vec3(0.0f, 5.0f, 0.0f),
+	
 };
-std::vector<glm::vec3>lightPosition = {
-	glm::vec3(7.0f, 10.0f, 40.0f),
-	glm::vec3(60.0f, 10.0f, 100.0f),
-	glm::vec3(80.0f, 10.0f, 80.0f),
-	glm::vec3(50.0f, 10.0f, 60.0f)
-};;
 
-UiManager uiManager;
+std::vector<glm::vec3> lightColor = {
+	glm::vec3(1.0f, 0.0f, 0.0f),
+	glm::vec3(0.0f, 1.0f, 0.0f),
+	glm::vec3(0.0f, 0.0f, 1.0f),
 
-
+};
 
 App::App(unsigned int width, unsigned int height)
-    : Width(width), Height(height)
+    : Width(width), Height(height), terrainRenderer(nullptr)
 {
 
 }
 
 App::~App()
 {
+	// Clean up terrain renderer
+	if (terrainRenderer) {
+		delete terrainRenderer;
+	}
+	
+	// Clean up lights
+	for (Light* light : lights) {
+		delete light;
+	}
+	
 	//init ui 
 	uiManager.Close();
 }
@@ -46,21 +51,14 @@ void App::Init()
 	
 	Shader meshShader = ResourceManager::GetShader("mesh");
 
-	
+	// Create terrain renderer
+	terrainRenderer = new TerrainRenderer(meshShader);
 
-	void* raw = operator new(sizeof(TerrainRenderer));
-	TerrainRenderer* terrainRenderer = static_cast<TerrainRenderer*>(raw);
-	new (terrainRenderer) TerrainRenderer(meshShader);
-
-
+	// Create lights
 	for (int i = 0; i < lightColor.size(); i++) {
 		Light* light = new Light(lightPosition[i], lightColor[i], 1.0f);
 		lights.push_back(light);
 	};
-	
-	
-	
-
 	
 	// Generate initial terrain using class parameters
 	terrainRenderer->GenerateTerrain(uiManager.terrainWidth, uiManager.terrainHeight, uiManager.terrainAmplitude,
@@ -72,8 +70,6 @@ void App::Init()
 void App::Update(float dt)
 {
 	camera.processInput(glfwGetCurrentContext(),dt);
-
-
 
 	// Check if terrain needs to be regenerated
 	if (uiManager.regenerateTerrain) {
@@ -109,7 +105,6 @@ void App::Render()
 	for (Light* light : lights) {
 		light->Render(lightShader, camera);
 	}
-	
 	
 	uiManager.RenderUi(camera);
 }

@@ -5,7 +5,9 @@
 
 #include "imgui.h"
 #include "Light.h"
-
+#include "Camera.h"
+#include "TerrainRenderer.h"
+#include "UiManager.h"
 
 class App
 {
@@ -20,4 +22,10 @@ public:
     void Update(float dt);
     void Render();
     
+public:
+    Camera camera;
+private:
+    TerrainRenderer* terrainRenderer;
+    std::vector<Light*> lights;
+    UiManager uiManager;
 };

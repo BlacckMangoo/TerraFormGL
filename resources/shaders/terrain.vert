@@ -12,7 +12,5 @@ uniform mat4 u_MVP;
 void main() {
     gl_Position = u_MVP * vec4(aPos, 1.0);
     FragPos = vec3(u_Model * vec4(aPos, 1.0));
-    
-    // Use the actual normal data from the vertex attribute
-    Normal = mat3(transpose(inverse(u_Model))) * aNormal;
+    Normal = mat3(transpose((u_Model))) * aNormal;
 }

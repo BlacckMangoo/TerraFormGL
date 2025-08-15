@@ -1,20 +1,55 @@
-#pragma once 
-#include <glad/glad.h>
+#pragma once
+#include <Shader.h>
+#include "IRenderable.h"
 #include <glm/glm.hpp>
-#include <string>
+#include <vector>
+#include <Camera.h>
 
-using namespace std;
-struct Vertex {
-	glm::vec3 position;
-	glm::vec3 normal;
-	glm::vec3 TexCoord;
-	glm::vec3 tangent;
-	glm::vec3 bitangent;
+
+// make sure the shader has a uModel uniform
+//default Mesh Data is for a cube 
+
+
+
+
+struct MeshData {
+    std::vector<glm::vec3> vertices ;
+    std::vector<unsigned int> indices ;
+
 };
 
-struct Texture
-{
-	unsigned int texId; 
-	string type; 
-	string path; 
+struct PhysicsProperties {
+    float mass = 1.0f;
+    glm::vec3 velocity = {0, 0, 0};
+    glm::vec3 acceleration = {0, 0, 0};
+};
+
+struct Transform {
+    glm::vec3 position = {0,0,0};
+    glm::vec3 rotation = {0,0,0};
+    glm::vec3 scale = {1,1,1};
+
+};
+
+class Mesh : public IRenderable {
+public:
+    void Init() override;
+    void Draw(const Camera& camera, Shader shader) override;
+    void Update(float dt) override;
+
+    Transform transform;
+    PhysicsProperties physicsProperties;
+    MeshData meshData;
+
+    Shader* shader;
+
+
+    Mesh(Transform transform, MeshData meshData, Shader* shader = nullptr , PhysicsProperties physicsProperties = PhysicsProperties());
+    ~Mesh();
+
+private:
+    unsigned int VBO;
+    unsigned int VAO;
+    unsigned int EBO;
+
 };

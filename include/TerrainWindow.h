@@ -19,7 +19,7 @@ public:
     int terrainHeight = 50;
     float terrainScale = 1.0f;
     float terrainFrequency = 0.1f;
-    float terrainAmplitude = 4.0f;
+    float terrainAmplitude = 0.0f;
     bool regenerateTerrain = false;
     int renderMode = 0; // 0=wireframe, 1=fill, 2=points
 

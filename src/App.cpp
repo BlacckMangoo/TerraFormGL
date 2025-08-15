@@ -2,11 +2,14 @@
 #include "TerrainRenderer.h"
 #include "ResourceManager.h"
 #include "Light.h"
+#include <Mesh.h>
+#include "MeshData.h"
 #include <iostream>
 
 namespace {
-    TerrainRenderer* terrainRenderer = nullptr;
-    std::vector<Light*> lights;
+ 
+    Mesh* sphere = nullptr;
+
 }
 
 App::App(unsigned int width, unsigned int height)
@@ -17,21 +20,11 @@ App::App(unsigned int width, unsigned int height)
 App::~App()
 {
     // Clean up the objects we created
-    if (terrainRenderer) {
-        delete terrainRenderer;
-        terrainRenderer = nullptr;
-    }
     
-    // Clean up lights
-    for (auto& light : lights) {
-        if (light) {
-            delete light;
-        }
-    }
-    lights.clear();
-
-    if (terrainRenderer) {
-        terrainRenderer->terrainWindow.Close();
+    // Clean up mesh
+    if (sphere) {
+        delete sphere;
+        sphere = nullptr;
     }
     
     if (camera.cameraWindow) {
@@ -58,19 +51,26 @@ void App::Init()
     vertPath = basePath + "shaders/light.vert";
     fragPath = basePath + "shaders/light.frag";
     ResourceManager::LoadShader(vertPath.c_str(), fragPath.c_str(), nullptr, "light");
-    
+
+    //unlitShader
+    vertPath = basePath + "shaders/unlitShader.vert";
+    fragPath = basePath + "shaders/unlitShader.frag";
+    ResourceManager::LoadShader(vertPath.c_str(), fragPath.c_str(), nullptr, "unlit");
+
     Shader meshShader = ResourceManager::GetShader("mesh");
-    
-    terrainRenderer = new TerrainRenderer(meshShader);
-    
-    Light* light = new Light(glm::vec3(200.0f, 40.0f, 20.0f), glm::vec3(1.0f, 1.0f, 1.0f));
-    lights.push_back(light);
-    
-    // Generate initial terrain
-    if (terrainRenderer) {
-        terrainRenderer->GenerateTerrain(50, 50, 1.0f, 0.1f, 5.0f);
-    }
-    
+    Shader unlitShader = ResourceManager::GetShader("unlit");
+
+    PhysicsProperties spherePhysics;
+    Transform sphereTransform;
+    sphereTransform.position = glm::vec3(0.0f, 10.0f, -20.0f);
+    sphereTransform.scale = glm::vec3(5.0f);
+    spherePhysics.mass = 1.0f;
+    spherePhysics.velocity = glm::vec3(0.0f, -1.0f, 0.0f);
+    spherePhysics.acceleration = glm::vec3(0.0f, -9.81f, 0.0f);
+
+    sphere = new Mesh(sphereTransform, GenerateSphereMeshData(1.0f, 36), nullptr, spherePhysics);
+
+
     glEnable(GL_DEPTH_TEST);
 }
 void App::ProcessInput(float dt)
@@ -81,48 +81,25 @@ void App::ProcessInput(float dt)
 void App::Update(float dt)
 {
     camera.processInput(glfwGetCurrentContext(), dt);
-   
-    if (terrainRenderer->terrainWindow.regenerateTerrain && terrainRenderer) {
-        terrainRenderer->GenerateTerrain(
-            terrainRenderer->terrainWindow.terrainWidth,
-            terrainRenderer->terrainWindow.terrainHeight, 
-            terrainRenderer->terrainWindow.terrainScale,
-            terrainRenderer->terrainWindow.terrainFrequency, 
-            terrainRenderer->terrainWindow.terrainAmplitude
-        );
-        terrainRenderer->terrainWindow.regenerateTerrain = false;
-    }
+    sphere->Update(dt);
+
 }
 
 void App::Render()
 {
     float time = glfwGetTime(); 
 
+    glEnable(GL_DEPTH_TEST);
     
+    // Update camera view matrix
     camera.updateViewMatrix();
-    
-    Shader lightShader = ResourceManager::GetShader("light");
-    for (auto& light : lights) {
-        if (light) {
-            light->Render(lightShader, camera);
-        }
+
+
+    if (sphere) {
+        Shader unlitShader = ResourceManager::GetShader("unlit");
+        sphere->Draw(camera, unlitShader);
     }
 
-    RenderModes mode = RENDER_MODE_WIRE_FRAME;
-    switch(terrainRenderer->terrainWindow.renderMode) {
-        case 0: mode = RENDER_MODE_WIRE_FRAME; break;
-        case 1: mode = RENDER_MODE_FILL; break;
-        case 2: mode = RENDER_MODE_POINTS; break;
-    }
     
-    if (terrainRenderer) {
-        terrainRenderer->DrawTerrain(mode, camera, lights);
-    }
-    
- 
-    terrainRenderer->terrainWindow.RenderUi(camera);
-    if (camera.cameraWindow) {
-        camera.cameraWindow->RenderUi(camera);
-    }
 }
 

@@ -19,7 +19,7 @@ struct MeshData {
 };
 
 struct PhysicsProperties {
-    float mass = 1.0f;
+    float mass = 100.0f; 
     glm::vec3 velocity = {0, 0, 0};
     glm::vec3 acceleration = {0, 0, 0};
 };
@@ -40,11 +40,12 @@ public:
     Transform transform;
     PhysicsProperties physicsProperties;
     MeshData meshData;
+    glm::vec4 color = {0.8, 0.2, 0.3, 1.0};
 
     Shader* shader;
 
 
-    Mesh(Transform transform, MeshData meshData, Shader* shader = nullptr , PhysicsProperties physicsProperties = PhysicsProperties());
+    Mesh(Transform transform, MeshData meshData, Shader* shader = nullptr , PhysicsProperties physicsProperties = PhysicsProperties(), glm::vec4 color = {0.8, 0.2, 0.3, 1.0});
     ~Mesh();
 
 private:

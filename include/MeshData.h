@@ -163,3 +163,40 @@ MeshData GenerateSphereMeshData(float radius, unsigned int segments, glm::vec3 c
 
     return sphereData;
 }
+
+
+
+MeshData GenerateGridData( int rows , int columns , float size )
+{
+    MeshData gridData;
+
+    // Generate vertices
+    for (int y = 0; y <= rows; ++y) {
+        for (int x = 0; x <= columns; ++x) {
+            gridData.vertices.push_back({
+                x * size, 0.0f, y * size
+            });
+        }
+    }
+
+    // Generate indices
+    for (int y = 0; y < rows; ++y) {
+        for (int x = 0; x < columns; ++x) {
+            int topLeft = (y * (columns + 1)) + x;
+            int topRight = topLeft + 1;
+            int bottomLeft = ((y + 1) * (columns + 1)) + x;
+            int bottomRight = bottomLeft + 1;
+
+            // Two triangles per quad
+            gridData.indices.push_back(topLeft);
+            gridData.indices.push_back(bottomLeft);
+            gridData.indices.push_back(topRight);
+
+            gridData.indices.push_back(topRight);
+            gridData.indices.push_back(bottomLeft);
+            gridData.indices.push_back(bottomRight);
+        }
+    }
+
+    return gridData;
+}

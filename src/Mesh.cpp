@@ -1,8 +1,8 @@
 #include <Mesh.h>
 #include <iostream>
 
-Mesh::Mesh(Transform transform, MeshData meshData, Shader* shader , PhysicsProperties physicsProperties)
-    :  transform(transform), meshData(meshData), shader(shader), physicsProperties(physicsProperties) {
+Mesh::Mesh(Transform transform, MeshData meshData, Shader* shader , PhysicsProperties physicsProperties , glm::vec4 color)
+    :  transform(transform), meshData(meshData), shader(shader), physicsProperties(physicsProperties), color(color) {
     Init();
 }
 
@@ -37,9 +37,6 @@ void Mesh::Init()   {
 }
 
 void Mesh::Draw(const Camera& camera, Shader shader) {
-    // Remove the GL_LINE mode to see the filled shape
-    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
     shader.Use();
 
     glm::mat4 model = glm::mat4(1.0f);
@@ -53,16 +50,14 @@ void Mesh::Draw(const Camera& camera, Shader shader) {
         glm::mat4 projection = glm::perspective(glm::radians(camera.getFOV()), 16.0f/9.0f, 0.01f, 2000.0f);
         glm::mat4 mvp = projection * view * model;
 
-        // Get uniform locations
-        GLint mvpLoc = glGetUniformLocation(shader.ID, "u_MVP");
-
-        if (mvpLoc == -1) {
-            std::cout << "Failed to find u_MVP uniform in shader " << shader.ID << std::endl;
-        } else {
-            glUniformMatrix4fv(mvpLoc, 1, GL_FALSE, glm::value_ptr(mvp));
-        }
+        // Set MVP and color uniforms using Shader's methods
+        shader.SetMatrix4("u_MVP", mvp);
+        shader.SetVector4f("u_Color", color);
+        
         glBindVertexArray(VAO);
-     
+
+        
+
         if (!meshData.indices.empty()) {
             glDrawElements(GL_TRIANGLES, meshData.indices.size(), GL_UNSIGNED_INT, 0);
         } else {
@@ -74,12 +69,8 @@ void Mesh::Draw(const Camera& camera, Shader shader) {
 
 
 void Mesh::Update(float dt) {
-
-    // verlet integration 
-
-     transform.position += physicsProperties.velocity * dt;
-    physicsProperties.velocity += physicsProperties.acceleration * physicsProperties.mass * dt;
-    
+    // Note: The main physics update is now done in App.cpp
+    // This method only updates the model matrix
 
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, transform.position);

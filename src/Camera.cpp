@@ -2,19 +2,30 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "GLFW/glfw3.h"
 #include "imgui.h"
-#include "imgui.h"
+#include "CameraWindow.h"
 Camera::Camera()
 {
-    cameraPos = glm::vec3(25.0f, 15.0f, 25.0f);  // Start at a good position to see terrain
-    cameraFront = glm::vec3(-0.5f, -0.3f, -0.5f);  // Look down and toward terrain center
+    cameraPos = glm::vec3(25.0f, 15.0f, 25.0f);  
+    cameraFront = glm::vec3(-0.5f, -0.3f, -0.5f);  
     cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
-    updateViewMatrix(); // Initialize view matrix
+    cameraWindow = new CameraWindow();
+
+    updateViewMatrix();
+}
+
+Camera::~Camera()
+{
+ 
+    if (cameraWindow) {
+        delete cameraWindow;
+        cameraWindow = nullptr;
+    }
 }
 
 void Camera::processInput(GLFWwindow* window, float deltaTime)
 {
-    float cameraSpeed = 25.0f * deltaTime;
+    float cameraSpeed = 40.0f * deltaTime;
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         cameraPos += cameraSpeed * cameraFront;
@@ -31,6 +42,7 @@ void Camera::processInput(GLFWwindow* window, float deltaTime)
 
 void Camera::updateViewMatrix()
 {
+    
     view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 }
 

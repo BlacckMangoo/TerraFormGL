@@ -5,7 +5,6 @@
 #include "Camera.h"
 #include "TerrainGenerator.h"
 #include <Light.h>
-#include "UiManager.h"
 #include <iostream>
 
 TerrainRenderer::TerrainRenderer(Shader& shader)
@@ -133,12 +132,12 @@ void TerrainRenderer::DrawTerrain(RenderModes mode, const Camera& camera, std::v
     shader.Use();
 
     // Matrices
-    glm::mat4 model = glm::mat4(1.0f); // Keep terrain static, no rotation
+    glm::mat4 model = glm::mat4(1.0f); 
     glm::mat4 view = glm::lookAt(camera.cameraPos, camera.cameraPos + camera.cameraFront, camera.cameraUp);
     glm::mat4 projection = glm::perspective(glm::radians(camera.getFOV()), 16.0f/9.0f, 0.01f, 2000.0f);
     glm::mat4 mvp = projection * view * model;
 
-    // Upload matrices with error checking
+
     GLuint mvpLoc = glGetUniformLocation(shader.ID, "u_MVP");
     if (mvpLoc != -1) {
         glUniformMatrix4fv(mvpLoc, 1, GL_FALSE, glm::value_ptr(mvp));
@@ -201,6 +200,5 @@ void TerrainRenderer::DrawTerrain(RenderModes mode, const Camera& camera, std::v
         std::cout << "Error: Terrain VAO not properly initialized or no vertices" << std::endl;
     }
 
-    // Reset polygon mode
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }

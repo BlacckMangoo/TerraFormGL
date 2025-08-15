@@ -13,7 +13,7 @@ uniform vec3 lightColors[MAX_LIGHTS];
 void main() {
     vec3 norm = normalize(Normal);
     vec3 result = vec3(0.0);
-    float ambientStrength = 0.1;
+    float ambientStrength = 0.02;
     for (int i = 0; i < numLights; ++i) {
         // Ambient
         vec3 ambient = ambientStrength * lightColors[i];

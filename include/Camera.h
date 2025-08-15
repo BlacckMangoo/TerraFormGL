@@ -2,25 +2,36 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
-
 #include "GLFW/glfw3.h"
 
+// Forward declaration
+class CameraWindow;
 
 
 
 class Camera {
 public:
     Camera();
+    ~Camera();
 
     glm::vec3 cameraPos;
     glm::vec3 cameraFront;
     glm::vec3 cameraUp;
     glm::mat4 view;
 
+    // Using pointer to avoid circular dependency
+    CameraWindow* cameraWindow;
+
     float yaw = -90.0f;     // Facing -Z
     float pitch = 0.0f;
     float fov = 45.0f;      // Field of view for zooming
 
+    // Method to update camera from UI window settings
+    void updateFromWindow();
+    
+    // Method to recalculate direction vectors from yaw and pitch
+    void updateDirectionVectors();
+    
     // Mouse tracking
     float lastX = 400.0f;
     float lastY = 300.0f;

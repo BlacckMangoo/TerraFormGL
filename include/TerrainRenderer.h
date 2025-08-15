@@ -3,7 +3,7 @@
 #include "Camera.h"
 #include "TerrainGenerator.h"
 #include "Light.h"
-#include "UiManager.h"
+#include "TerrainWindow.h"
 
 class TerrainRenderer {
 public:
@@ -20,16 +20,14 @@ public:
     void DrawTerrain(RenderModes mode, const Camera& camera, 
        std::vector<Light*> lights);
     void GenerateTerrain(int width, int height, float scale, float frequency, 
-
         float amplitude);
     // Render state
     Shader       shader;
+    TerrainWindow terrainWindow;
     unsigned int    VAO;
     unsigned int VBO;
     private:
-    
 
-   
 
     // Terrain data
     TerrainGenerator terrainGen;

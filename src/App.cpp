@@ -5,12 +5,12 @@
 #include <Mesh.h>
 #include "MeshData.h"
 #include <iostream>
+#include <cstdlib>
+#include <ctime>
 
 namespace {
- 
-    Mesh* sphere = nullptr;
 
-}
+    std::vector<Mesh*> spheres = {nullptr};}
 
 App::App(unsigned int width, unsigned int height)
     : Width(width), Height(height)
@@ -19,14 +19,12 @@ App::App(unsigned int width, unsigned int height)
 
 App::~App()
 {
-    // Clean up the objects we created
-    
-    // Clean up mesh
-    if (sphere) {
-        delete sphere;
-        sphere = nullptr;
+   
+    for (auto& s : spheres) {
+        delete s;
     }
-    
+    spheres.clear();
+
     if (camera.cameraWindow) {
         camera.cameraWindow->Close();
     }
@@ -60,16 +58,32 @@ void App::Init()
     Shader meshShader = ResourceManager::GetShader("mesh");
     Shader unlitShader = ResourceManager::GetShader("unlit");
 
-    PhysicsProperties spherePhysics;
-    Transform sphereTransform;
-    sphereTransform.position = glm::vec3(0.0f, 10.0f, -20.0f);
-    sphereTransform.scale = glm::vec3(5.0f);
-    spherePhysics.mass = 1.0f;
-    spherePhysics.velocity = glm::vec3(0.0f, -1.0f, 0.0f);
-    spherePhysics.acceleration = glm::vec3(0.0f, -9.81f, 0.0f);
 
-    sphere = new Mesh(sphereTransform, GenerateSphereMeshData(1.0f, 36), nullptr, spherePhysics);
+   // Initialize random seed
+   srand(static_cast<unsigned int>(time(nullptr)));
 
+   for (int i = 0; i < 2000; i++)
+   {
+       Transform sphereTransform;
+
+       sphereTransform.position = glm::vec3(
+           (rand() % 2000 - 1000) / 100.0f,  // -10 to +10
+           (rand() % 2000 - 1000) / 100.0f,  // -10 to +10
+           (rand() % 2000 - 1000) / 100.0f   // -10 to +10
+       );
+       sphereTransform.scale = glm::vec3(0.008f);
+       
+
+       PhysicsProperties physics;
+       physics.velocity = glm::vec3(
+           (rand() % 1000 - 500) / 100.0f,   // -5 to +5
+           (rand() % 1000 - 500) / 100.0f,   // -5 to +5
+           (rand() % 1000 - 500) / 100.0f    // -5 to +5
+       );
+       physics.acceleration = glm::vec3(0.0f, -0.9f, 0.0f); // Light gravity
+       
+       spheres.push_back(new Mesh(sphereTransform, GenerateSphereMeshData(1.0f, 32), nullptr, physics));
+   }
 
     glEnable(GL_DEPTH_TEST);
 }
@@ -81,8 +95,27 @@ void App::ProcessInput(float dt)
 void App::Update(float dt)
 {
     camera.processInput(glfwGetCurrentContext(), dt);
-    sphere->Update(dt);
-
+    
+    // Define boundary box
+    const float boundarySize = 35.0f;
+    
+    for (auto& s : spheres) {
+        if (s) {
+            s->Update(dt);
+            
+         
+            for (int i = 0; i < 3; i++) {
+            
+                if (std::abs(s->transform.position[i]) > boundarySize) {
+             
+                    s->physicsProperties.velocity[i] = -s->physicsProperties.velocity[i] * 0.8f;
+                    
+                  
+                    s->transform.position[i] = boundarySize * (s->transform.position[i] > 0 ? 0.99f : -0.99f);
+                }
+            }
+        }
+    }
 }
 
 void App::Render()
@@ -90,16 +123,18 @@ void App::Render()
     float time = glfwGetTime(); 
 
     glEnable(GL_DEPTH_TEST);
-    
-    // Update camera view matrix
+
     camera.updateViewMatrix();
 
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    if (sphere) {
-        Shader unlitShader = ResourceManager::GetShader("unlit");
-        sphere->Draw(camera, unlitShader);
+    for (auto& s : spheres) {
+        if (s) {
+            Shader unlitShader = ResourceManager::GetShader("unlit");
+            s->Draw(camera, unlitShader);
+        }
     }
 
-    
+
 }
 

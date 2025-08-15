@@ -22,8 +22,8 @@ public:
     // Using pointer to avoid circular dependency
     CameraWindow* cameraWindow;
 
-    float yaw = -90.0f;     // Facing -Z
-    float pitch = 0.0f;
+    float yaw = -90.0f;     // Facing -Z (this matches our cameraFront = (0,0,-1))
+    float pitch = 0.0f;     // Looking straight ahead
     float fov = 45.0f;      // Field of view for zooming
 
     // Method to update camera from UI window settings

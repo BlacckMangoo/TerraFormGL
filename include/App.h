@@ -6,6 +6,9 @@
 #include "TerrainWindow.h"
 #include "CameraWindow.h"
 
+// Forward declaration
+class Mesh;
+
 class App
 {
 public:
@@ -21,5 +24,6 @@ public:
     
 public:
     Camera camera;
+    std::vector<Mesh*> spheres;
 
 };

@@ -1,7 +1,7 @@
 #include "Light.h"
 
-Light::Light(const glm::vec3& pos, const glm::vec3& col, float lightScale)
-    : position(pos), color(col), scale(lightScale), VAO(0), VBO(0),EBO(0), initialized(false)
+Light::Light(const glm::vec3& pos, const glm::vec3& col)
+    : position(pos), color(col), VAO(0), VBO(0),EBO(0), initialized(false)
 {
 	// Initialize the light cube geometry
 	setupGeometry();
@@ -95,7 +95,6 @@ void Light::Render( Shader& lightShader, const Camera& camera)
     // Create transformation matrices
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, position);
-    model = glm::scale(model, glm::vec3(scale));
 
     glm::mat4 view = glm::lookAt(camera.cameraPos, camera.cameraPos + camera.cameraFront, camera.cameraUp);
     glm::mat4 projection = glm::perspective(glm::radians(camera.getFOV()), 16.0f/9.0f, 0.01f, 2000.0f);
@@ -107,7 +106,6 @@ void Light::Render( Shader& lightShader, const Camera& camera)
 
     lightShader.SetVector3f("lightColor", color.x, color.y, color.z);
 	lightShader.SetVector3f("lightPosition", position.x, position.y, position.z);
-	lightShader.SetFloat("lightScale", scale);
 
     // Render the cube
     glBindVertexArray(VAO);
@@ -123,9 +121,4 @@ void Light::SetPosition(const glm::vec3& pos)
 void Light::SetColor(const glm::vec3& col)
 {
     color = col;
-}
-
-void Light::SetScale(float lightScale)
-{
-    scale = lightScale;
 }

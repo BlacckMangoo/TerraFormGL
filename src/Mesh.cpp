@@ -85,3 +85,13 @@ void Mesh::Update(float dt) {
     }
    
 }
+
+void Mesh::UpdateVertexPositions() {
+    // Update the vertex buffer with the current vertices data
+    if (!meshData.vertices.empty()) {
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferData(GL_ARRAY_BUFFER, meshData.vertices.size() * sizeof(glm::vec3), 
+                    meshData.vertices.data(), GL_STATIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    }
+}

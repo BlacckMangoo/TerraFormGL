@@ -1,6 +1,6 @@
 #pragma once
 #include <Camera.h>
-
+#include <Shader.h>
 class IRenderable {
 public:
     virtual void Init() = 0;

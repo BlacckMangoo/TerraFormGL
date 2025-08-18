@@ -1,8 +1,15 @@
-//
-// Created by satvik on 8/19/25.
-//
+#pragma once
 
-#ifndef MYGAME_ICLICKABLE_H
-#define MYGAME_ICLICKABLE_H
+#include <glm/glm.hpp>
 
-#endif //MYGAME_ICLICKABLE_H
+
+struct Ray {
+    glm::vec3 origin;
+    glm::vec3 direction; // normalized
+};
+
+class ISelectable {
+public:
+    virtual ~ISelectable() = default;
+    virtual bool IntersectsRay(const Ray& ray, float& tHit) const = 0;
+};

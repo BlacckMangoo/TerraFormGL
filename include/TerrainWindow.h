@@ -1,6 +1,6 @@
 #pragma once
 #include <Camera.h>
-#include "IUiManager.h"
+#include "IUiWindow.h"
 
 enum RenderModes
 {
@@ -11,7 +11,7 @@ enum RenderModes
 };
 
 
-class TerrainWindow : public IUiManager {
+class TerrainWindow : public IUiWindow {
 
 public:
     // Terrain parameters for ImGui controls

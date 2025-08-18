@@ -16,7 +16,7 @@ public:
 
     int vertexCount; 
 
-    void Draw(RenderModes mode, const Camera& camera );
+    void Draw(RenderModes mode, const Camera& camera);
     void DrawTerrain(RenderModes mode, const Camera& camera, 
        std::vector<Light*> lights);
     void GenerateTerrain(int width, int height, float scale, float frequency, 

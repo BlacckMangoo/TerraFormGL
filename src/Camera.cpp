@@ -5,12 +5,12 @@
 #include "CameraWindow.h"
 Camera::Camera()
 {
-    // Position camera to look at the origin (0,0,0) from a distance
-    cameraPos = glm::vec3(0.0f, 0.0f, 20.0f);  // Position camera on the Z axis looking toward origin
-    cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);  // Looking along negative Z axis (toward origin)
+
+    cameraPos = glm::vec3(0.0f, 0.0f, 20.0f);  
+    cameraFront = glm::vec3(0.0f, 0.0f, -1.0f); 
     cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
-    // Make sure yaw and pitch match the front vector
+
     yaw = -90.0f;  // -90 degrees means looking down the negative Z axis
     pitch = 0.0f;  // 0 degrees means looking straight ahead
     

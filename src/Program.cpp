@@ -11,6 +11,8 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 
+#include "ObjectClickDetection.h"
+
 // Camera is now a member of App class
 
 // GLFW function declarations
@@ -26,7 +28,7 @@ const unsigned int SCREEN_WIDTH = 1920;
 // The height of the screen
 const unsigned int SCREEN_HEIGHT = 1080;
 
-App App(SCREEN_WIDTH, SCREEN_HEIGHT);
+App app(SCREEN_WIDTH, SCREEN_HEIGHT);
 
 
 
@@ -76,7 +78,7 @@ int main(int argc, char* argv[])
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	App.Init();
+	app.Init();
 
     //BASIC GAME LOOP 
 	// -----------------
@@ -100,17 +102,17 @@ int main(int argc, char* argv[])
 
         // manage user input
         // -----------------
-        App.ProcessInput(deltaTime);
+        app.ProcessInput(deltaTime);
 
         // update game state
         // -----------------
-        App.Update(deltaTime);
+        app.Update(deltaTime);
 
         // render
         // ------
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // Fixed: Clear depth buffer too
-        App.Render();
+        app.Render();
 
         // Render ImGui
         ImGui::Render();
@@ -160,15 +162,14 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
     // Forward to ImGui first
     ImGui_ImplGlfw_CursorPosCallback(window, xpos, ypos);
-    
-    // Check if ImGui wants to capture mouse input
+
     ImGuiIO& io = ImGui::GetIO();
     if (io.WantCaptureMouse) {
         return; // Let ImGui handle the input
     }
     
     // Process mouse movement for camera
-    App.camera.processMouseMovement(static_cast<float>(xpos), static_cast<float>(ypos));
+    app.camera.processMouseMovement(static_cast<float>(xpos), static_cast<float>(ypos));
 }
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
@@ -183,7 +184,7 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
     }
     
     // Process scroll for camera
-    App.camera.processMouseScroll(static_cast<float>(yoffset));
+    app.camera.processMouseScroll(static_cast<float>(yoffset));
 }
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
@@ -197,8 +198,20 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
         return; // Let ImGui handle the input
     }
     
+    // Generate ray on left mouse button press
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+        double mouseX, mouseY;
+        glfwGetCursorPos(window, &mouseX, &mouseY);
+        ObjectClickDetection objectClickDetection;
+        
+        Ray ray = objectClickDetection.generateRay(static_cast<int>(mouseX), static_cast<int>(mouseY), 
+                                                 SCREEN_WIDTH, SCREEN_HEIGHT, app.camera);
+        std::cout << "Ray Origin: (" << ray.origin.x << ", " << ray.origin.y << ", " << ray.origin.z << ") "
+                  << "Direction: (" << ray.direction.x << ", " << ray.direction.y << ", " << ray.direction.z << ")" << std::endl;
+    }
+    
     // Process mouse buttons for camera
-    App.camera.processMouseButton(button, action);
+    app.camera.processMouseButton(button, action);
 }
 
 void char_callback(GLFWwindow* window, unsigned int c)

@@ -1,13 +1,10 @@
-//
-// Created by satvik on 8/19/25.
-//
-
-#ifndef MYGAME_OBJECTCLICKDETECTION_H
-#define MYGAME_OBJECTCLICKDETECTION_H
-
-
+#pragma once
+#include "IClickable.h"
+#include "glm/glm.hpp"
+#include "Camera.h"
 class ObjectClickDetection {
+    public:
+
+    Ray  generateRay(int x, int y , int screenWidth , int screenHeight , const Camera& camera );
+
 };
-
-
-#endif //MYGAME_OBJECTCLICKDETECTION_H

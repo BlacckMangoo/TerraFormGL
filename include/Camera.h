@@ -7,9 +7,8 @@
 // Forward declaration
 class CameraWindow;
 
-
-
-class Camera {
+class Camera
+{
 public:
     Camera();
     ~Camera();
@@ -19,19 +18,20 @@ public:
     glm::vec3 cameraUp;
     glm::mat4 view;
 
-    // Using pointer to avoid circular dependency
-    CameraWindow* cameraWindow;
+ 
 
-    float yaw = -90.0f;     // Facing -Z (this matches our cameraFront = (0,0,-1))
-    float pitch = 0.0f;     // Looking straight ahead
-    float fov = 45.0f;      // Field of view for zooming
+    CameraWindow *cameraWindow;
+
+    float yaw = -90.0f; // Facing -Z (this matches our cameraFront = (0,0,-1))
+    float pitch = 0.0f; // Looking straight ahead
+    float fov = 45.0f;  // Field of view for zooming
 
     // Method to update camera from UI window settings
     void updateFromWindow();
-    
+
     // Method to recalculate direction vectors from yaw and pitch
     void updateDirectionVectors();
-    
+
     // Mouse tracking
     float lastX = 400.0f;
     float lastY = 300.0f;
@@ -44,13 +44,18 @@ public:
     bool isRotating = false;
     bool isPanning = false;
 
-    void processInput(GLFWwindow* window, float deltaTime);
+    void processInput(GLFWwindow *window, float deltaTime);
     void updateViewMatrix();
     void processMouseMovement(float xpos, float ypos);
     void processMouseScroll(float yoffset);
     void processMouseButton(int button, int action);
     float getFOV() const { return fov; }
-
-
-	
+       glm::mat4 getProjectionMatrix() const
+    {
+        return glm::perspective(glm::radians(getFOV()), 16.0f / 9.0f, 0.01f, 2000.0f);
+    }
+    glm::mat4 getViewMatrix() const
+    {
+        return glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+    }
 };

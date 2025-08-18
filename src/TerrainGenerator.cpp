@@ -13,7 +13,6 @@ std::vector<float> TerrainGenerator::generateTerrain(int width, int height, floa
 	
     std::vector<float> terrainData;
 
-    // Now storing position (3) + normal (3) = 6 floats per vertex
     terrainData.reserve((width - 1) * (height - 1) * 6 * 6);
 
     for (int j = 0; j < height - 1; ++j)

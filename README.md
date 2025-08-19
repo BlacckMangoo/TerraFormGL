@@ -3,6 +3,7 @@
 
 A real-time procedural terrain generator with dynamic lighting, built using modern OpenGL. This application demonstrates procedural terrain generation using noise algorithms, real-time rendering with modern OpenGL, and an interactive UI for parameter control.
 
+![Terrain Overview](ReadmeImagesAndVideos/Screenshot%20from%202025-08-19%2018-02-01.png)
 
 
 ## Features
@@ -15,6 +16,26 @@ A real-time procedural terrain generator with dynamic lighting, built using mode
 - **Ray Casting**: Select and interact with scene objects through mouse picking
 - **ImGui Integration**: Comprehensive UI for parameter controls and real-time feedback
 - **Resource Management**: Efficient shader and texture resource management system
+
+## Visual Showcase
+
+### Terrain Visualization
+![Terrain Detail](ReadmeImagesAndVideos/Screenshot%20from%202025-08-15%2023-07-42.png)
+
+### UI Controls and Parameter Tuning
+![UI Interface](ReadmeImagesAndVideos/Screenshot%20from%202025-08-19%2017-34-49.png)
+
+### Dynamic Terrain Generation Demo
+<video src="ReadmeImagesAndVideos/Screencast%20from%2008-16-2025%2004:52:03%20AM.webm" controls="controls" style="max-width: 730px;">
+</video>
+
+*[View Terrain Generation Video](ReadmeImagesAndVideos/Screencast%20from%2008-16-2025%2004:52:03%20AM.webm)*
+
+### Lighting and Camera Movement Demo
+<video src="ReadmeImagesAndVideos/Screencast%20from%2008-19-2025%2005:16:44%20PM.webm" controls="controls" style="max-width: 730px;">
+</video>
+
+*[View Lighting and Camera Movement Video](ReadmeImagesAndVideos/Screencast%20from%2008-19-2025%2005:16:44%20PM.webm)*
 
 ## Technical Details
 

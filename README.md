@@ -1,126 +1,83 @@
-
 # Procedural Terrain Generator (OpenGL)
 
-A real-time procedural terrain generator with dynamic lighting, built using modern OpenGL. This application demonstrates procedural terrain generation using noise algorithms, real-time rendering with modern OpenGL, and an interactive UI for parameter control.
+A small OpenGL project that generates terrain in real-time using noise.  
+Includes multiple rendering modes, dynamic lighting, and an ImGui UI for tweaking parameters.
 
 ![Terrain Overview](ReadmeImagesAndVideos/Screenshot%20from%202025-08-19%2018-02-01.png)
 
+---
 
 ## Features
-
-- **Procedural Terrain Generation**: Create dynamic terrain landscapes using FastNoiseLite algorithm
-- **Multiple Rendering Modes**: Switch between wireframe, solid, and point cloud visualization modes
-- **Advanced Camera System**: First-person camera with smooth movement and adjustable parameters
-- **Dynamic Lighting System**: Multiple colored point lights with proper attenuation and phong shading
-- **Real-time Parameter Tuning**: Adjust terrain properties (frequency, amplitude, scale) on-the-fly
-- **Ray Casting**: Select and interact with scene objects through mouse picking
-- **ImGui Integration**: Comprehensive UI for parameter controls and real-time feedback
-- **Resource Management**: Efficient shader and texture resource management system
-
-## Visual Showcase
-
-### Terrain Visualization
-![Terrain Detail](ReadmeImagesAndVideos/Screenshot%20from%202025-08-15%2023-07-42.png)
-
-### UI Controls and Parameter Tuning
-![UI Interface](ReadmeImagesAndVideos/Screenshot%20from%202025-08-19%2017-34-49.png)
-
-### Dynamic Terrain Generation Demo
-<video src="ReadmeImagesAndVideos/Screencast%20from%2008-16-2025%2004:52:03%20AM.webm" controls="controls" style="max-width: 730px;">
-</video>
-
-*[View Terrain Generation Video](ReadmeImagesAndVideos/Screencast%20from%2008-16-2025%2004:52:03%20AM.webm)*
-
-### Lighting and Camera Movement Demo
-<video src="ReadmeImagesAndVideos/Screencast%20from%2008-19-2025%2005:16:44%20PM.webm" controls="controls" style="max-width: 730px;">
-</video>
-
-*[View Lighting and Camera Movement Video](ReadmeImagesAndVideos/Screencast%20from%2008-19-2025%2005:16:44%20PM.webm)*
-
-## Technical Details
-
-- Written in modern C++ (C++17) with OpenGL 3.3 Core Profile
-- Uses GLSL shaders for lighting, terrain shading, and visual effects
-- Implements efficient mesh generation algorithms with optimized vertex data structures
-- Hardware-accelerated rendering with performance optimizations
-- Modular architecture with clean separation of rendering, generation, and UI components
-
-## Getting Started
-
-### Prerequisites
-
-- CMake 3.6+
-- OpenGL 3.3+ compatible GPU
-- Git (for cloning the repository)
-
-All other dependencies are included in the repository:
-- GLFW 3.3.2 (window management)
-- GLAD (OpenGL loader)
-- GLM (mathematics library)
-- Dear ImGui (user interface)
-- STB Image & STB TrueType (asset loading)
-
-### Building
-
-```bash
-# Clone the repository
-git clone https://github.com/BlacckMangoo/ProceduralTerrainGeneratorOpenGL.git
-cd ProceduralTerrainGeneratorOpenGL
-
-# Create build directory and compile
-mkdir build && cd build
-cmake ..
-make
-```
-
-### Running
-
-```bash
-./mygame
-```
-
-## Controls
-
-- **WASD**: Move camera position
-- **Mouse Movement**: Look around/rotate camera
-- **Mouse Wheel**: Zoom in/out
-- **Left Click**: Select objects in the scene
-- **UI Panels**: Adjust terrain and camera parameters in real-time
-  - Terrain: Frequency, amplitude, scale, resolution
-  - Camera: Movement speed, sensitivity, field of view
-  - Lighting: Position, color, intensity of scene lights
-
-## Project Structure
-
-- `src/`: Core application logic and implementation files
-- `include/`: Header files defining classes and interfaces
-- `resources/shaders/`: GLSL shader programs for different rendering techniques
-- `thirdparty/`: External libraries and dependencies
-  - `glad/`: OpenGL loader
-  - `glfw-3.3.2/`: Window management
-  - `glm/`: Mathematics library
-  - `imgui-docking/`: UI framework
-  - `stb_image/` & `stb_truetype/`: Asset loading utilities
-
-## Key Components
-
-- **TerrainGenerator**: Creates procedural terrain meshes using noise algorithms
-- **TerrainRenderer**: Handles rendering of terrain with proper lighting
-- **Camera**: Manages view and projection matrices for scene rendering
-- **ResourceManager**: Handles loading and caching of shader programs and textures
-- **Light**: Represents point lights in the scene with proper attenuation models
-- **App**: Core application class that orchestrates the rendering pipeline
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Acknowledgments
-
-- [FastNoiseLite](https://github.com/Auburn/FastNoiseLite) for efficient noise generation
-- [OpenGL Tutorials](https://learnopengl.com/) for lighting and shader techniques
-- [Dear ImGui](https://github.com/ocornut/imgui) for the user interface framework
+- Procedural terrain with FastNoiseLite
+- Wireframe / solid / point cloud modes
+- First-person camera (WASD + mouse look)
+- Point lights with phong shading
+- ImGui controls for terrain + camera + lights
+- Basic mouse picking
 
 ---
 
-Contributions and feedback are welcome! Feel free to submit issues or pull requests.
+## Visuals
+
+### Terrain
+![Terrain Detail](ReadmeImagesAndVideos/Screenshot%20from%202025-08-15%2023-07-42.png)
+
+### UI Controls
+![UI Interface](ReadmeImagesAndVideos/Screenshot%20from%202025-08-19%2017-34-49.png)
+
+### Demos
+<video src="ReadmeImagesAndVideos/Screencast%20from%2008-16-2025%2004:52:03%20AM.webm" controls="controls" style="max-width: 730px;"></video>  
+*[View Terrain Generation Video](ReadmeImagesAndVideos/Screencast%20from%2008-16-2025%2004:52:03%20AM.webm)*  
+
+<video src="ReadmeImagesAndVideos/Screencast%20from%2008-19-2025%2005:16:44%20PM.webm" controls="controls" style="max-width: 730px;"></video>  
+*[View Lighting & Camera Demo](ReadmeImagesAndVideos/Screencast%20from%2008-19-2025%2005:16:44%20PM.webm)*  
+
+---
+
+## Build
+
+### Requirements
+- CMake 3.6+
+- OpenGL 3.3+
+- Git
+
+Dependencies are bundled (GLFW, GLAD, GLM, ImGui, stb).
+
+```bash
+git clone https://github.com/BlacckMangoo/ProceduralTerrainGeneratorOpenGL.git
+cd ProceduralTerrainGeneratorOpenGL
+mkdir build && cd build
+cmake ..
+make
+./mygame
+
+
+Controls
+
+WASD → move
+
+Mouse → look
+
+Scroll → zoom
+
+Left click → pick
+
+UI → tweak terrain, camera, lights
+
+Structure
+
+src/ → code
+
+include/ → headers
+
+resources/shaders/ → GLSL shaders
+
+thirdparty/ → libraries
+
+Credits
+
+FastNoiseLite
+
+LearnOpenGL
+
+Dear ImGui

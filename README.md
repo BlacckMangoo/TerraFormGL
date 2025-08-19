@@ -3,7 +3,9 @@
 
 A real-time procedural terrain generator with dynamic lighting, built using modern OpenGL. This application demonstrates procedural terrain generation using noise algorithms, real-time rendering with modern OpenGL, and an interactive UI for parameter control.
 
-[Screencast from 08-19-2025 05:16:44 PM.webm](https://githfile:///home/satvik/Pictures/Screenshots/Screenshot%20from%202025-08-19%2018-02-01.png
+[Screencast from 08-19-2025 05:16:44 PM.webm]
+
+(https://githfile:///home/satvik/Pictures/Screenshots/Screenshot%20from%202025-08-19%2018-02-01.png
 ub.com/user-attachments/assets/1446689e-8587-4b6a-85fa-980daf55c1fc)
 
 

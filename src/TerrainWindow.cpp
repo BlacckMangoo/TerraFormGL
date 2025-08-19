@@ -35,8 +35,29 @@ void TerrainWindow::RenderUi(const Camera& camera)
 	ImGui::Separator();
 	ImGui::Text("Render Settings");
 	ImGui::Separator();
+	// Make sure renderMode int matches the mode enum
+	if (mode == RENDER_MODE_WIRE_FRAME && renderMode != 0)
+		renderMode = 0;
+	else if (mode == RENDER_MODE_FILL && renderMode != 1)
+		renderMode = 1;
+	else if (mode == RENDER_MODE_POINTS && renderMode != 2)
+		renderMode = 2;
+
 	const char* renderModes[] = { "Wireframe", "Fill", "Points" };
-	ImGui::Combo("Render Mode", &renderMode, renderModes, 3);
+	if (ImGui::Combo("Render Mode", &renderMode, renderModes, 3)) {
+		// Update the actual render mode enum when selection changes
+		switch (renderMode) {
+		case 0:
+			mode = RENDER_MODE_WIRE_FRAME;
+			break;
+		case 1:
+			mode = RENDER_MODE_FILL;
+			break;
+		case 2:
+			mode = RENDER_MODE_POINTS;
+			break;
+		}
+	}
 	if (ImGui::Button("Regenerate Terrain", ImVec2(-1, 0))) {
 		regenerateTerrain = true;
 	}

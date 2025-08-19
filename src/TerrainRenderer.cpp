@@ -103,6 +103,7 @@ void TerrainRenderer::GenerateTerrain(int width, int height, float scale, float 
     glBindVertexArray(0);
 
     terrainGenerated = true;
+    
 }
 
 void TerrainRenderer::DrawTerrain(RenderModes mode, const Camera& camera, std::vector<Light*> lights){
@@ -111,13 +112,16 @@ void TerrainRenderer::DrawTerrain(RenderModes mode, const Camera& camera, std::v
     }
 
 
-    // Set polygon mode
-    if (mode == RENDER_MODE_WIRE_FRAME)
+    // Set polygon mode based on selected render mode
+    if (mode == RENDER_MODE_WIRE_FRAME) {
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    else if (mode == RENDER_MODE_FILL)
+    }
+    else if (mode == RENDER_MODE_FILL) {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    else if (mode == RENDER_MODE_POINTS)
+    }
+    else if (mode == RENDER_MODE_POINTS) {
         glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+    }
 
     shader.Use();
 
@@ -181,3 +185,4 @@ void TerrainRenderer::DrawTerrain(RenderModes mode, const Camera& camera, std::v
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
+

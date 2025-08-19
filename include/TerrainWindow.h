@@ -23,7 +23,7 @@ public:
     bool regenerateTerrain = false;
     int renderMode = 0; // 0=wireframe, 1=fill, 2=points
 
-	RenderModes mode  = RENDER_MODE_WIRE_FRAME;
+	RenderModes mode  = RENDER_MODE_WIRE_FRAME; // Start with wireframe mode
 
 
 
@@ -38,7 +38,19 @@ public:
 		return mode;
 	}
 
-	void SetRenderMode(int mode) {
-		renderMode = mode;
+	void SetRenderMode(int newMode) {
+		renderMode = newMode;
+		// Also update the enum mode
+		switch (newMode) {
+		case 0:
+			mode = RENDER_MODE_WIRE_FRAME;
+			break;
+		case 1:
+			mode = RENDER_MODE_FILL;
+			break;
+		case 2:
+			mode = RENDER_MODE_POINTS;
+			break;
+		}
 	}
 };

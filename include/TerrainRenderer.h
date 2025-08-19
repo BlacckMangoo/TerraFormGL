@@ -4,7 +4,6 @@
 #include "TerrainGenerator.h"
 #include "Light.h"
 #include "TerrainWindow.h"
-
 class TerrainRenderer {
 public:
 
@@ -36,7 +35,14 @@ public:
     unsigned int terrainVBO;
     int terrainVertexCount;
     bool terrainGenerated;
+    
+    // Terrain bounds in world space
+    struct {
+        glm::vec3 min;  // Minimum corner of the terrain's bounding box
+        glm::vec3 max;  // Maximum corner of the terrain's bounding box
+    } bounds;
 
     void initTerrainRenderData();
     void initTerrainData();
+
 };

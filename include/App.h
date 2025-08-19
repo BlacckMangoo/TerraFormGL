@@ -5,7 +5,7 @@
 #include "Camera.h"
 #include "TerrainWindow.h"
 #include "CameraWindow.h"
-
+#include "IClickable.h"
 // Forward declaration
 class Mesh;
 
@@ -24,6 +24,6 @@ public:
     
 public:
     Camera camera;
-    std::vector<Mesh*> spheres;
+    std::vector<IClickable*> clickables;
 
 };

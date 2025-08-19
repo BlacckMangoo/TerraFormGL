@@ -12,6 +12,7 @@
 #include "imgui_impl_opengl3.h"
 
 #include "ObjectClickDetection.h"
+#include "Light.h"
 
 // Camera is now a member of App class
 
@@ -208,6 +209,21 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
                                                  SCREEN_WIDTH, SCREEN_HEIGHT, app.camera);
         std::cout << "Ray Origin: (" << ray.origin.x << ", " << ray.origin.y << ", " << ray.origin.z << ") "
                   << "Direction: (" << ray.direction.x << ", " << ray.direction.y << ", " << ray.direction.z << ")" << std::endl;
+
+        for (auto* clickable : app.clickables) {
+            float tHit;
+            if (clickable->IntersectsRay(ray, tHit)) {
+                std::cout << "Clicked on object at t = " << tHit << std::endl;
+                
+                // Check if it's a Light object
+                Light* light = dynamic_cast<Light*>(clickable);
+                if (light && light->lightWindow) {
+                    // Toggle the light control window
+                    light->lightWindow->Toggle();
+                    std::cout << "Toggled light UI window" << std::endl;
+                }
+            }
+        }
     }
     
     // Process mouse buttons for camera

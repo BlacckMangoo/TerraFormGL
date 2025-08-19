@@ -8,8 +8,8 @@ struct Ray {
     glm::vec3 direction; // normalized
 };
 
-class ISelectable {
+class IClickable     {
 public:
-    virtual ~ISelectable() = default;
+    virtual ~IClickable() = default;
     virtual bool IntersectsRay(const Ray& ray, float& tHit) const = 0;
 };

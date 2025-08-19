@@ -71,7 +71,8 @@ void App::Init()
 
     // Setup default light(s)
     lights.clear();
-    lights.push_back(new Light(glm::vec3(0.0f, 10.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f)));
+    lights.push_back(new Light(glm::vec3(0.0f, 10.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f))); // White light
+    lights.push_back(new Light(glm::vec3(5.0f, 8.0f, 5.0f), glm::vec3(0.0f, 0.8f, 1.0f))); // Blue-cyan light
 
     // Generate initial terrain
     terrainRenderer.GenerateTerrain(
@@ -81,6 +82,10 @@ void App::Init()
         terrainRenderer.terrainWindow.terrainFrequency,
         terrainRenderer.terrainWindow.terrainAmplitude
     );
+
+    for( auto* light : lights) {
+        clickables.push_back(light);
+    }
 }
 
 void App::ProcessInput(float dt)
@@ -112,6 +117,13 @@ void App::Render()
     camera.updateViewMatrix();
     camera.cameraWindow->RenderUi(camera);
     terrainRenderer.terrainWindow.RenderUi(camera);
+    
+    // Render any open light windows
+    for (auto* l : lights) {
+        if (l->lightWindow) {
+            l->lightWindow->RenderUi(camera);
+        }
+    }
 
     Shader terrainShader = ResourceManager::GetShader("terrain");
     terrainShader.Use();
@@ -119,8 +131,8 @@ void App::Render()
     std::vector<Light*> lightPtrs;
     for (auto* l : lights) {
         lightPtrs.push_back(l);
-
     }
+    
     terrainRenderer.DrawTerrain(
         terrainRenderer.terrainWindow.GetRenderMode(),
         camera,
@@ -131,10 +143,6 @@ void App::Render()
     lightShader.Use();
 
     for (auto* l : lights) {
-      l->Render(lightShader,camera);
+      l->Render(lightShader, camera);
     }
-
-
-
-
 }

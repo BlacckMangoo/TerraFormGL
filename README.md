@@ -3,7 +3,7 @@
 A small OpenGL project that generates terrain in real-time using noise.  
 Includes multiple rendering modes, dynamic lighting, and an ImGui UI for tweaking parameters.
 
-![Terrain Overview](ReadmeImagesAndVideos/Screenshot%20from%202025-08-19%2018-02-01.png)
+![Terrain Overview](media/Screenshot%20from%202025-08-19%2018-02-01.png)
 
 ---
 
@@ -20,16 +20,16 @@ Includes multiple rendering modes, dynamic lighting, and an ImGui UI for tweakin
 ## Visuals
 
 ### Terrain
-![Terrain Detail](ReadmeImagesAndVideos/Screenshot%20from%202025-08-15%2023-07-42.png)
+![Terrain Detail](media/Screenshot%20from%202025-08-15%2023-07-42.png)
 
 ### UI Controls
-![UI Interface](ReadmeImagesAndVideos/Screenshot%20from%202025-08-19%2017-34-49.png)
+![UI Interface](media/Screenshot%20from%202025-08-19%2017-34-49.png)
 
 ### Demos
-<video src="ReadmeImagesAndVideos/Screencast%20from%2008-16-2025%2004:52:03%20AM.webm" controls="controls" style="max-width: 730px;"></video>  
+<video src="media/Screencast%20from%2008-16-2025%2004:52:03%20AM.webm" controls="controls" style="max-width: 730px;"></video>  
 *[View Terrain Generation Video](ReadmeImagesAndVideos/Screencast%20from%2008-16-2025%2004:52:03%20AM.webm)*  
 
-<video src="ReadmeImagesAndVideos/Screencast%20from%2008-19-2025%2005:16:44%20PM.webm" controls="controls" style="max-width: 730px;"></video>  
+<video src="media/Screencast%20from%2008-19-2025%2005:16:44%20PM.webm" controls="controls" style="max-width: 730px;"></video>  
 *[View Lighting & Camera Demo](ReadmeImagesAndVideos/Screencast%20from%2008-19-2025%2005:16:44%20PM.webm)*  
 
 ---
@@ -51,33 +51,4 @@ cmake ..
 make
 ./mygame
 
-
-Controls
-
-WASD → move
-
-Mouse → look
-
-Scroll → zoom
-
-Left click → pick
-
-UI → tweak terrain, camera, lights
-
-Structure
-
-src/ → code
-
-include/ → headers
-
-resources/shaders/ → GLSL shaders
-
-thirdparty/ → libraries
-
-Credits
-
-FastNoiseLite
-
-LearnOpenGL
-
-Dear ImGui
+```

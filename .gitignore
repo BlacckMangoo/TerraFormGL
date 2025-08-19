@@ -1,6 +1,14 @@
+# Build directories
 /out
-bin/
-build/
-/.vs
-.idea/
+/bin
+/build
+/cmake-build-*/
+
+
+# CMake files
 CMakeSettings.json
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+
+.vscode/

@@ -69,12 +69,10 @@ void App::Init()
 
     terrainRenderer = TerrainRenderer(terrainShader);
 
-    // Setup default light(s)
     lights.clear();
     lights.push_back(new Light(glm::vec3(0.0f, 10.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f))); // White light
     lights.push_back(new Light(glm::vec3(5.0f, 8.0f, 5.0f), glm::vec3(0.0f, 0.8f, 1.0f))); // Blue-cyan light
 
-    // Generate initial terrain
     terrainRenderer.GenerateTerrain(
         terrainRenderer.terrainWindow.terrainWidth,
         terrainRenderer.terrainWindow.terrainHeight,
@@ -96,7 +94,6 @@ void App::Update(float dt)
 {
     camera.processInput(glfwGetCurrentContext(), dt);
 
-    // Update terrain if needed from UI
     if (terrainRenderer.terrainWindow.regenerateTerrain) {
         terrainRenderer.GenerateTerrain(
             terrainRenderer.terrainWindow.terrainWidth,
@@ -118,7 +115,6 @@ void App::Render()
     camera.cameraWindow->RenderUi(camera);
     terrainRenderer.terrainWindow.RenderUi(camera);
     
-    // Render any open light windows
     for (auto* l : lights) {
         if (l->lightWindow) {
             l->lightWindow->RenderUi(camera);

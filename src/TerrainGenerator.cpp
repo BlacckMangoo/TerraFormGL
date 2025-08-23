@@ -1,15 +1,12 @@
 #include "TerrainGenerator.h"
 #include "Noise.h"
-#include "GLFW/glfw3.h"
+#include "TerrainStrategy.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-std::vector<float> TerrainGenerator::generateTerrain(int width, int height, float scale, float frequency,
-	float amplitude)
+std::vector<float> TerrainGenerator::generateTerrain(int width, int height, float scale,ITerrainHeightStrategy* heightStrategy)
 {
-    FastNoiseLite noise;
-	noise.SetFrequency(frequency);
 	
     std::vector<float> terrainData;
 
@@ -24,10 +21,10 @@ std::vector<float> TerrainGenerator::generateTerrain(int width, int height, floa
             float x1 = (i + 1) * scale;
             float z1 = (j + 1) * scale;
 
-            float y00 = noise.GetNoise(x0 * frequency, z0 * frequency) * amplitude;
-            float y10 = noise.GetNoise(x1 * frequency, z0 * frequency) * amplitude;
-            float y11 = noise.GetNoise(x1 * frequency, z1 * frequency) * amplitude;
-            float y01 = noise.GetNoise(x0 * frequency, z1 * frequency) * amplitude;
+            float y00 = heightStrategy->GetHeight(x0,z0);
+            float y10 = heightStrategy->GetHeight(x1,z0);
+            float y11 = heightStrategy->GetHeight(x1,z1);
+            float y01 = heightStrategy->GetHeight(x0,z1);
 
             
      

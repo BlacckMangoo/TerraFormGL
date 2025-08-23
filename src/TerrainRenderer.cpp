@@ -82,11 +82,8 @@ void TerrainRenderer::initTerrainData()
     glGenBuffers(1, &this->terrainVBO);
 }
 
-void TerrainRenderer::GenerateTerrain(int width, int height, float scale, float frequency, float amplitude){
-
-
-    terrainVertices = terrainGen.generateTerrain(width, height, scale, frequency,
-        amplitude);
+void TerrainRenderer::GenerateTerrain(int width, int height, float scale,  ITerrainHeightStrategy* heightStrategy){
+    terrainVertices = terrainGen.generateTerrain(width, height, scale,heightStrategy);
     terrainVertexCount = terrainVertices.size() / 6;
     glBindVertexArray(terrainVAO);
     glBindBuffer(GL_ARRAY_BUFFER, terrainVBO);

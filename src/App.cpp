@@ -14,6 +14,7 @@
 namespace {
     TerrainRenderer terrainRenderer;
     std::vector<Light*> lights;
+
 }
 
 App::App(unsigned int width, unsigned int height)
@@ -73,14 +74,9 @@ void App::Init()
     lights.push_back(new Light(glm::vec3(0.0f, 10.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f))); // White light
     lights.push_back(new Light(glm::vec3(5.0f, 8.0f, 5.0f), glm::vec3(0.0f, 0.8f, 1.0f))); // Blue-cyan light
 
-    terrainRenderer.GenerateTerrain(
-        terrainRenderer.terrainWindow.terrainWidth,
-        terrainRenderer.terrainWindow.terrainHeight,
-        terrainRenderer.terrainWindow.terrainScale,
-        terrainRenderer.terrainWindow.terrainFrequency,
-        terrainRenderer.terrainWindow.terrainAmplitude
-    );
+    NoiseStrategy  noise = NoiseStrategy(terrainRenderer.terrainWindow.terrainFrequency , terrainRenderer.terrainWindow.terrainAmplitude);
 
+    terrainRenderer.GenerateTerrain(terrainRenderer.terrainWindow.terrainWidth , terrainRenderer .terrainWindow.terrainHeight , terrainRenderer .terrainWindow.terrainScale ,&noise );
     for( auto* light : lights) {
         clickables.push_back(light);
     }
@@ -93,15 +89,11 @@ void App::ProcessInput(float dt)
 void App::Update(float dt)
 {
     camera.processInput(glfwGetCurrentContext(), dt);
+    NoiseStrategy  noise = NoiseStrategy(terrainRenderer.terrainWindow.terrainFrequency , terrainRenderer.terrainWindow.terrainAmplitude);
 
     if (terrainRenderer.terrainWindow.regenerateTerrain) {
-        terrainRenderer.GenerateTerrain(
-            terrainRenderer.terrainWindow.terrainWidth,
-            terrainRenderer.terrainWindow.terrainHeight,
-            terrainRenderer.terrainWindow.terrainScale,
-            terrainRenderer.terrainWindow.terrainFrequency,
-            terrainRenderer.terrainWindow.terrainAmplitude
-        );
+        terrainRenderer.GenerateTerrain(terrainRenderer.terrainWindow.terrainWidth , terrainRenderer .terrainWindow.terrainHeight , terrainRenderer .terrainWindow.terrainScale ,&noise );
+
         terrainRenderer.terrainWindow.regenerateTerrain = false;
     }
 }

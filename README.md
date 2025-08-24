@@ -1,6 +1,6 @@
 # Procedural Terrain Generator (OpenGL)
 
-A small OpenGL project that generates terrain in real-time using noise.  
+A small OpenGL project that generates terrain in real-time using Mathematical functions 
 Includes multiple rendering modes, dynamic lighting, and an ImGui UI for tweaking parameters.
 
 ![Terrain Overview](media/Screenshot%20from%202025-08-19%2018-02-01.png)

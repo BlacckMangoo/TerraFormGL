@@ -1,15 +1,14 @@
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-#include "App.h"
-#include "Camera.h"
-#include "ResourceManager.h"
+
+#include "../include/App/App.h"
+#include "../include/Core/Camera.h"
+#include "../include/Utils/ResourceManager.h"
 #include <iostream>
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 
-#include "ObjectClickDetection.h"
-#include "Light.h"
+#include "../include/Utils/ObjectClickDetection.h"
+#include "../include/Graphics/Light.h"
 
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);

@@ -39,32 +39,19 @@ void App::Init()
     glfwWindowHint(GLFW_RESIZABLE, false);
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
     // Load shaders
-    const std::string basePath = "../resources/";
-    std::string vertPath, fragPath;
+    const std::string basePath = "../resources/shaders/";
+    std::vector<std::string> shaderPaths = { "unlitShader","terrain","light","sprite"};
 
-    vertPath = basePath + "shaders/sprite.vert";
-    fragPath = basePath + "shaders/sprite.frag";
-    ResourceManager::LoadShader(vertPath.c_str(), fragPath.c_str(), nullptr, "sprite");
+    for ( auto& shaderPath : shaderPaths ) {
+        std::string vertPath = basePath + shaderPath + ".vert";
+        std::string fragPath = basePath + shaderPath + ".frag";
 
-    vertPath = basePath + "shaders/terrain.vert";
-    fragPath = basePath + "shaders/terrain.frag";
-    ResourceManager::LoadShader(vertPath.c_str(), fragPath.c_str(), nullptr, "mesh");
-
-    vertPath = basePath + "shaders/light.vert";
-    fragPath = basePath + "shaders/light.frag";
-    ResourceManager::LoadShader(vertPath.c_str(), fragPath.c_str(), nullptr, "light");
-
-    vertPath = basePath + "shaders/unlitShader.vert";
-    fragPath = basePath + "shaders/unlitShader.frag";
-    Shader unlitShader = ResourceManager::LoadShader(vertPath.c_str(), fragPath.c_str(), nullptr, "unlit");
-
-    vertPath = basePath + "shaders/terrain.vert";
-    fragPath = basePath + "shaders/terrain.frag";
-    Shader terrainShader = ResourceManager::LoadShader(vertPath.c_str(), fragPath.c_str(), nullptr, "terrain");
+        ResourceManager::LoadShader(vertPath.c_str(),fragPath.c_str(),nullptr,shaderPath);
+    }
 
     glEnable(GL_DEPTH_TEST);
 
-    terrainRenderer = TerrainRenderer(terrainShader);
+    terrainRenderer = TerrainRenderer(ResourceManager::GetShader("terrain"));
 
     lights.clear();
     lights.push_back(new Light(glm::vec3(0.0f, 10.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f))); // White light

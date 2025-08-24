@@ -18,7 +18,7 @@ Shader ResourceManager::LoadShader(const char* vShaderFile, const char* fShaderF
     return Shaders[name];
 }
 
-Shader ResourceManager::GetShader(std::string name)
+Shader& ResourceManager::GetShader(std::string name)
 {
     return Shaders[name];
 }

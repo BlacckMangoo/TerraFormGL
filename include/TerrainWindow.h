@@ -20,7 +20,7 @@ public:
     float terrainScale = 1.0f;
     float terrainFrequency = 0.1f;
     float terrainAmplitude = 0.0f;
-    bool regenerateTerrain = false;
+    bool regenerateTerrain = true;
     int renderMode = 0; // 0=wireframe, 1=fill, 2=points
 
 	RenderModes mode  = RENDER_MODE_WIRE_FRAME; // Start with wireframe mode

@@ -21,6 +21,7 @@ public:
     void Init();
     void Update(float dt);
     void Render();
+    float time = 0.0f;
     
 public:
     Camera camera;

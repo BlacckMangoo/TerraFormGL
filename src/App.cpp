@@ -74,9 +74,7 @@ void App::Init()
     lights.push_back(new Light(glm::vec3(0.0f, 10.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f))); // White light
     lights.push_back(new Light(glm::vec3(5.0f, 8.0f, 5.0f), glm::vec3(0.0f, 0.8f, 1.0f))); // Blue-cyan light
 
-    NoiseStrategy  noise = NoiseStrategy(terrainRenderer.terrainWindow.terrainFrequency , terrainRenderer.terrainWindow.terrainAmplitude);
 
-    terrainRenderer.GenerateTerrain(terrainRenderer.terrainWindow.terrainWidth , terrainRenderer .terrainWindow.terrainHeight , terrainRenderer .terrainWindow.terrainScale ,&noise );
     for( auto* light : lights) {
         clickables.push_back(light);
     }
@@ -89,18 +87,34 @@ void App::ProcessInput(float dt)
 void App::Update(float dt)
 {
     camera.processInput(glfwGetCurrentContext(), dt);
-    NoiseStrategy  noise = NoiseStrategy(terrainRenderer.terrainWindow.terrainFrequency , terrainRenderer.terrainWindow.terrainAmplitude);
 
-    if (terrainRenderer.terrainWindow.regenerateTerrain) {
-        terrainRenderer.GenerateTerrain(terrainRenderer.terrainWindow.terrainWidth , terrainRenderer .terrainWindow.terrainHeight , terrainRenderer .terrainWindow.terrainScale ,&noise );
 
-        terrainRenderer.terrainWindow.regenerateTerrain = false;
-    }
+    time += 3.0f* dt;
+
+    // Noise strategy (if you need it later)
+    NoiseStrategy noise(terrainRenderer.terrainWindow.terrainFrequency,
+                        terrainRenderer.terrainWindow.terrainAmplitude);
+
+    // Animated radial hills
+    auto radialHills = [this](float x, float y) -> float {
+        float r = std::sqrt(x*x + y*y);
+        return std::sin(r * 0.4f - time);
+    };
+
+    GraphFunctionStrategy graphFunc(radialHills);
+
+    // regenerate terrain every frame with updated heights
+    terrainRenderer.GenerateTerrain(
+        terrainRenderer.terrainWindow.terrainWidth,
+        terrainRenderer.terrainWindow.terrainHeight,
+        terrainRenderer.terrainWindow.terrainScale,
+        &graphFunc
+    );
 }
 
 void App::Render()
 {
-    float time = glfwGetTime();
+
     glEnable(GL_DEPTH_TEST);
 
     camera.updateViewMatrix();

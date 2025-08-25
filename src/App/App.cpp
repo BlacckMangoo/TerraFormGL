@@ -52,11 +52,7 @@ void App::Init()
     glEnable(GL_DEPTH_TEST);
 
     terrainRenderer = TerrainRenderer(ResourceManager::GetShader("terrain"));
-
-    lights.clear();
     lights.push_back(new Light(glm::vec3(0.0f, 10.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f))); // White light
-    lights.push_back(new Light(glm::vec3(5.0f, 8.0f, 5.0f), glm::vec3(0.0f, 0.8f, 1.0f))); // Blue-cyan light
-
 
     for( auto* light : lights) {
         clickables.push_back(light);
@@ -67,18 +63,19 @@ void App::ProcessInput(float dt)
 {
 }
 
-void App::Update(float dt)
-{
+void App::Update(float dt) {
     camera.processInput(glfwGetCurrentContext(), dt);
-    time += 3.0f* dt;
+    time += 1.0f * dt;
 
-    GraphFunctionStrategy graphFunc(TerrainHeightFunctions::breathingBlobs(time));
-    // regenerate terrain every frame with updated heights
+    float terrainCenterX = terrainRenderer.terrainWindow.terrainWidth / 2.0f;
+    float terrainCenterY = terrainRenderer.terrainWindow.terrainHeight / 2.0f;
+
+    GraphFunctionStrategy morph(TerrainHeightFunctions::morphingTerrain(time, 0.2f, terrainCenterX, terrainCenterY));
     terrainRenderer.GenerateTerrain(
         terrainRenderer.terrainWindow.terrainWidth,
         terrainRenderer.terrainWindow.terrainHeight,
         terrainRenderer.terrainWindow.terrainScale,
-        &graphFunc
+        &morph
     );
 }
 

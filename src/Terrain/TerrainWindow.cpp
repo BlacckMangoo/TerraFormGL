@@ -1,6 +1,6 @@
-#include "../../include/Terrain/TerrainWindow.h"
+#include "Terrain/TerrainWindow.h"
 #include "imgui.h"
-#include "../../include/Core/Camera.h"
+#include "Core/Camera.h"
 
 
 

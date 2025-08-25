@@ -29,8 +29,8 @@ App app(SCREEN_WIDTH, SCREEN_HEIGHT);
 int main(int argc, char* argv[])
 {
     glfwInit();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     glfwWindowHint(GLFW_RESIZABLE, false);
@@ -39,6 +39,8 @@ int main(int argc, char* argv[])
     GLFWwindow* window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "SimXsycs", nullptr, nullptr);
     glfwMakeContextCurrent(window);
 
+
+    glfwSwapInterval(0);
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
@@ -77,13 +79,30 @@ int main(int argc, char* argv[])
 
     float deltaTime = 0.0f;
     float lastFrame = 0.0f;
+    
+    // FPS tracking variables
+    float fpsUpdateTime = 0.0f;
+    int frameCount = 0;
+    float fps = 0.0f;
 
     while (!glfwWindowShouldClose(window))
     {
-     
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
+        
+        // Update FPS counter every 0.25 seconds
+        frameCount++;
+        fpsUpdateTime += deltaTime;
+        if (fpsUpdateTime >= 0.25f) {
+            fps = frameCount / fpsUpdateTime;
+            frameCount = 0;
+            fpsUpdateTime = 0.0f;
+            
+            // Update window title with FPS
+            std::string title = "SimXsycs - FPS: " + std::to_string(static_cast<int>(fps));
+            glfwSetWindowTitle(window, title.c_str());
+        }
         glfwPollEvents();
 
 
@@ -99,7 +118,7 @@ int main(int argc, char* argv[])
 
       
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // Fixed: Clear depth buffer too
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         app.Render();
 
      

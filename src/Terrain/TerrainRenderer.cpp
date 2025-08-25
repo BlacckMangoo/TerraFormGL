@@ -56,7 +56,6 @@ void TerrainRenderer::Draw(RenderModes mode ,const  Camera& camera )
 	glm::mat4 model = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     glm::mat4 view = camera.getViewMatrix();
     glm::mat4 projection = camera.getProjectionMatrix();
-
     glm::mat4 mvp = projection * view * model;
 
     // Upload to shader with error checking
@@ -88,7 +87,7 @@ void TerrainRenderer::GenerateTerrain(int width, int height, float scale,  ITerr
     terrainVertexCount = terrainVertices.size() / 6;
     glBindVertexArray(terrainVAO);
     glBindBuffer(GL_ARRAY_BUFFER, terrainVBO);
-    glBufferData(GL_ARRAY_BUFFER, terrainVertices.size() * sizeof(float), terrainVertices.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, terrainVertices.size() * sizeof(float), terrainVertices.data() ,GL_DYNAMIC_DRAW);
 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
@@ -99,7 +98,6 @@ void TerrainRenderer::GenerateTerrain(int width, int height, float scale,  ITerr
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
-
     terrainGenerated = true;
     
 }
@@ -108,8 +106,6 @@ void TerrainRenderer::DrawTerrain(RenderModes mode, const Camera& camera, std::v
     if (!terrainGenerated) {
         return; // No terrain to render
     }
-
-
     // Set polygon mode based on selected render mode
     if (mode == RENDER_MODE_WIRE_FRAME) {
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);

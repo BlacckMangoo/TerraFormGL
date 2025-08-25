@@ -10,7 +10,7 @@
 class Light : public IClickable
 {
 public:
-    glm::vec3 position;   // Visual position of the light
+    glm::vec3 position;  
     glm::vec3 color;
     float radius; 
     

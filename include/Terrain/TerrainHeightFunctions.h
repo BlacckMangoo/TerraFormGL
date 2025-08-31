@@ -141,7 +141,7 @@ HeightFunction breathingBlobs(float time, float frequency = 0.3f, int numBlobs =
     return [time, frequency, numBlobs, offsetX, offsetY](float x, float y) -> float {
         float height = 0.0f;
         for (int i = 0; i < numBlobs; i++) {
-            float phase = i * 2.0f * M_PI / numBlobs;
+            float phase = i * 2.0f * 3.14f / numBlobs;
             float centerX = 6.0f * std::cos(phase + time * frequency) + offsetX;
             float centerY = 6.0f * std::sin(phase + time * frequency) + offsetY;
             float radius = 2.0f + std::sin(time * 2.0f + phase);
@@ -176,7 +176,7 @@ HeightFunction orbitalRings(float time, int numRings = 4, float baseRadius = 3.0
         for (int i = 0; i < numRings; i++) {
             float radius = baseRadius * (i + 1);
             float speed = 1.0f / (i + 1);
-            float angle = time * speed + i * M_PI / 2.0f;
+            float angle = time * speed + i * 3.14f / 2.0f;
 
             float centerX = radius * std::cos(angle);
             float centerY = radius * std::sin(angle);

@@ -39,6 +39,8 @@ void Mesh::Init()   {
     } 
     
     glBindVertexArray(0);
+
+    physicsProperties.velocity = glm::vec3(0, 2, 0);
 }
 
 void Mesh::Draw(const Camera& camera, Shader shader) {
@@ -74,11 +76,13 @@ void Mesh::Draw(const Camera& camera, Shader shader) {
 
 
 void Mesh::Update(float dt) {
-    // Note: The main physics update is now done in App.cpp
+
     // This method only updates the model matrix
+    this->physicsProperties.acceleration += physicsProperties.velocity ;
+
 
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, transform.position);
+    model = glm::translate(model, transform.position + this->physicsProperties.velocity);
     model = glm::rotate(model, glm::radians(transform.rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
     model = glm::rotate(model, glm::radians(transform.rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
     model = glm::rotate(model, glm::radians(transform.rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));

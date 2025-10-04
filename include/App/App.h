@@ -22,5 +22,7 @@ public:
 public:
     Camera camera;
     std::vector<IClickable*> clickables;
+    // Mesh for simple debug geometry (initialized after GL context is ready)
+    class Mesh* circleMesh = nullptr;
 
 };

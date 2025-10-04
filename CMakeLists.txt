@@ -31,7 +31,9 @@ file(GLOB_RECURSE CPP_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 file(GLOB_RECURSE CU_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cu")
 
 # Combine all sources
-set(ALL_SOURCES ${CPP_SOURCES} ${CU_SOURCES})
+set(ALL_SOURCES ${CPP_SOURCES} ${CU_SOURCES}
+		include/Graphics/MeshData.h
+		include/Graphics/MeshData.h)
 
 # Set CUDA language property for .cu files only
 set_source_files_properties(${CU_SOURCES} PROPERTIES LANGUAGE CUDA)

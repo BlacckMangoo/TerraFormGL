@@ -1,7 +1,7 @@
 #pragma once 
 
 #include <glm/glm.hpp>
-#include <Mesh.h>
+#include <Graphics/Mesh.h>
 
 
 MeshData cubeData = {
@@ -101,7 +101,7 @@ MeshData GenerateCircleMeshData (float radius, unsigned int segments , glm::vec3
     
     // Generate perimeter vertices
     for (unsigned int i = 0; i < segments; ++i) {
-        float angle = 2.0f * M_PI * i / static_cast<float>(segments);
+        float angle = 2.0f * 3.14 * i / static_cast<float>(segments);
         circleData.vertices.push_back({
             radius * cos(angle) + center.x,
          

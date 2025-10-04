@@ -164,7 +164,6 @@ void Light::Render( Shader& lightShader, const Camera& camera)
 
 void Light::SetPosition(const glm::vec3& pos)
 {
-    // Simply update position
     position = pos;
 }
 

@@ -21,8 +21,7 @@ public:
     // Render state
     Shader       shader;
     TerrainWindow terrainWindow;
-    unsigned int    VAO;
-    unsigned int VBO;
+
     private:
 
 
@@ -31,6 +30,9 @@ public:
     std::vector<float> terrainVertices;
     unsigned int terrainVAO;
     unsigned int terrainVBO;
+
+    unsigned int SSBO ;
+
     int terrainVertexCount;
     bool terrainGenerated;
     
@@ -40,7 +42,6 @@ public:
         glm::vec3 max;  // Maximum corner of the terrain's bounding box
     } bounds;
 
-    void initTerrainRenderData();
     void initTerrainData();
 
 };

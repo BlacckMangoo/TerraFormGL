@@ -13,26 +13,18 @@ TerrainRenderer::TerrainRenderer(Shader& shader)
     this->shader = shader;
     this->terrainGenerated = false;
     this->terrainVertexCount = 0;
-    this->initTerrainRenderData();
     this->initTerrainData();
 }
 
 TerrainRenderer::~TerrainRenderer()
 {
-    glDeleteVertexArrays(1, &this->VAO);
-    glDeleteBuffers(1, &this->VBO);
+
     if (terrainGenerated) {
         glDeleteVertexArrays(1, &this->terrainVAO);
         glDeleteBuffers(1, &this->terrainVBO);
     }
 }
 
-void TerrainRenderer::initTerrainRenderData()
-{
-
-    glGenVertexArrays(1, &this->VAO);
-    glGenBuffers(1, &this->VBO);
-}
 
 
 void TerrainRenderer::initTerrainData()

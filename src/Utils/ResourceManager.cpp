@@ -112,3 +112,36 @@ Texture2D ResourceManager::loadTextureFromFile(const char* file, bool alpha)
     stbi_image_free(data);
     return texture;
 }
+
+Shader ResourceManager::LoadComputeShader(const char* cShaderFile, std::string name)
+{
+    Shaders[name] = loadComputeShaderFromFile(cShaderFile);
+    return Shaders[name];
+}
+
+Shader ResourceManager::loadComputeShaderFromFile(const char* cShaderFile)
+{
+    std::string computeCode;
+    try
+    {
+        std::ifstream computeShaderFile(cShaderFile);
+        std::stringstream cShaderStream;
+        cShaderStream << computeShaderFile.rdbuf();
+        computeShaderFile.close();
+        computeCode = cShaderStream.str();
+    }
+    catch (std::exception e)
+    {
+        std::cout << "ERROR::SHADER: Failed to read compute shader file: " << cShaderFile << std::endl;
+    }
+
+    const char* cShaderCode = computeCode.c_str();
+    Shader shader;
+    shader.CompileCompute(cShaderCode);
+
+    if (shader.ID == 0) {
+        std::cerr << "ResourceManager::loadComputeShaderFromFile - compiled compute shader has ID 0 (compile/link likely failed): "
+                  << cShaderFile << std::endl;
+    }
+    return shader;
+}

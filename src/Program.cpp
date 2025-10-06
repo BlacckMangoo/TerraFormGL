@@ -117,14 +117,14 @@ int main(int argc, char* argv[])
 
        
         app.ProcessInput(deltaTime);
-
-     
         app.Update(deltaTime);
-
-      
+       
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        
+        // Call the render method
         app.Render();
+
 
      
         ImGui::Render();

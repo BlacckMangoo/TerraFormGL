@@ -17,6 +17,8 @@ public:
     void Init();
     void Update(float dt);
     void Render();
+
+    void LoadShaders();
     float time = 0.0f;
     
 public:

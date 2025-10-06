@@ -17,6 +17,21 @@ namespace {
 
 }
 
+void App::LoadShaders()
+{
+    const std::string basePath = "../resources/shaders/";
+    std::vector<std::string> shaderPaths = { "unlitShader","terrain","light","sprite","compute"};
+
+    for ( auto& shaderPath : shaderPaths ) {
+        std::string vertPath = basePath + shaderPath + ".vert";
+        std::string fragPath = basePath + shaderPath + ".frag";
+        std::string compPath = basePath + shaderPath + ".glsl";
+
+       ResourceManager::LoadShader(vertPath.c_str(), fragPath.c_str(), nullptr, shaderPath);
+    }
+
+    ResourceManager::LoadComputeShader("../resources/shaders/compute.glsl","compute");
+}
 App::App(unsigned int width, unsigned int height)
     : Width(width), Height(height)
 {
@@ -32,25 +47,22 @@ App::~App()
 void App::Init()
 {
 
-    // Load shaders
-    const std::string basePath = "../resources/shaders/";
-    std::vector<std::string> shaderPaths = { "unlitShader","terrain","light","sprite"};
-
-    for ( auto& shaderPath : shaderPaths ) {
-        std::string vertPath = basePath + shaderPath + ".vert";
-        std::string fragPath = basePath + shaderPath + ".frag";
-
-        ResourceManager::LoadShader(vertPath.c_str(),fragPath.c_str(),nullptr,shaderPath);
-    }
-
+   App::LoadShaders();
     glEnable(GL_DEPTH_TEST);
 
-    terrainRenderer = TerrainRenderer(ResourceManager::GetShader("terrain"));
-    lights.push_back(new Light(glm::vec3(0.0f, 10.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f))); // White light
+    terrainRenderer = TerrainRenderer(ResourceManager::GetShader("terrain"),ResourceManager::GetShader("compute"));
+    lights.push_back(new Light(glm::vec3(20.0f, 4.0f, 20.0f), glm::vec3(1.0f, 1.0f, 1.0f))); // White light
 
     for( auto* light : lights) {
         clickables.push_back(light);
     }
+
+    terrainRenderer.GenerateTerrain(
+   terrainRenderer.terrainWindow.terrainWidth,
+   terrainRenderer.terrainWindow.terrainHeight,
+   terrainRenderer.terrainWindow.terrainScale
+);
+
 }
 
 void App::ProcessInput(float dt)
@@ -61,20 +73,22 @@ void App::Update(float dt) {
     camera.processInput(glfwGetCurrentContext(), dt);
     time += 1.0f * dt;
 
-    float terrainCenterX = terrainRenderer.terrainWindow.terrainWidth / 2.0f;
-    float terrainCenterY = terrainRenderer.terrainWindow.terrainHeight / 2.0f;
-
-    GraphFunctionStrategy morph(TerrainHeightFunctions::morphingTerrain(time, 0.2f, terrainCenterX, terrainCenterY));
-    terrainRenderer.GenerateTerrain(
-        terrainRenderer.terrainWindow.terrainWidth,
-        terrainRenderer.terrainWindow.terrainHeight,
-        terrainRenderer.terrainWindow.terrainScale,
-        &morph
-    );
+    // Check if terrain needs to be regenerated
+    if (terrainRenderer.terrainWindow.regenerateTerrain) {
+        terrainRenderer.GenerateTerrain(
+            terrainRenderer.terrainWindow.terrainWidth,
+            terrainRenderer.terrainWindow.terrainHeight,
+            terrainRenderer.terrainWindow.terrainScale
+        );
+        // Reset the flag
+        terrainRenderer.terrainWindow.regenerateTerrain = false;
+    }
 }
 
 void App::Render()
 {
+
+
 
     glEnable(GL_DEPTH_TEST);
 
@@ -95,6 +109,8 @@ void App::Render()
     for (auto* l : lights) {
         lightPtrs.push_back(l);
     }
+
+
 
     terrainRenderer.DrawTerrain(
         terrainRenderer.terrainWindow.GetRenderMode(),

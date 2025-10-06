@@ -8,7 +8,7 @@ class TerrainRenderer {
 public:
 
     // Constructor (inits shaders/shapes)
-    TerrainRenderer(Shader& shader);
+    TerrainRenderer(Shader& shader, Shader& computeShader);
     TerrainRenderer() = default;
     ~TerrainRenderer();
     // Renders a defined quad textured with given sprite
@@ -18,8 +18,10 @@ public:
     void DrawTerrain(RenderModes mode, const Camera& camera, 
        std::vector<Light*> lights);
     void GenerateTerrain(int width, int height, float scale, ITerrainHeightStrategy* heightStrategy);
+    void GenerateTerrain(int width, int height, float scale);
     // Render state
     Shader       shader;
+    Shader      computeShader;
     TerrainWindow terrainWindow;
 
     private:
@@ -29,9 +31,9 @@ public:
     TerrainGenerator terrainGen;
     std::vector<float> terrainVertices;
     unsigned int terrainVAO;
-    unsigned int terrainVBO;
 
-    unsigned int SSBO ;
+
+    unsigned int terrainSSBO ;
 
     int terrainVertexCount;
     bool terrainGenerated;

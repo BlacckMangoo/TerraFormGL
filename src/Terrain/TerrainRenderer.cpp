@@ -34,47 +34,6 @@ void TerrainRenderer::initTerrainRenderData()
     glGenBuffers(1, &this->VBO);
 }
 
-void TerrainRenderer::Draw(RenderModes mode ,const  Camera& camera )
-{
-
-    if (shader.ID == 0) {
-        std::cout << "Error: Shader not initialized in TerrainRenderer::Draw" << std::endl;
-        return;
-    }
-
-    // Set polygon mode
-    if (mode == RENDER_MODE_WIRE_FRAME)
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    else if (mode == RENDER_MODE_FILL)
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    else if (mode == RENDER_MODE_POINTS)
-        glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
-
-    shader.Use();
-
-    // Matrices
-	glm::mat4 model = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    glm::mat4 view = camera.getViewMatrix();
-    glm::mat4 projection = camera.getProjectionMatrix();
-    glm::mat4 mvp = projection * view * model;
-
-    // Upload to shader with error checking
-    GLuint mvpLoc = glGetUniformLocation(shader.ID, "u_MVP");
-    if (mvpLoc != -1) {
-        glUniformMatrix4fv(mvpLoc, 1, GL_FALSE, glm::value_ptr(mvp));
-    } else {
-        std::cout << "Warning: Uniform 'u_MVP' not found in shader" << std::endl;
-    }
-
-    // Check if VAO is valid before drawing
-    if (VAO != 0) {
-        glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-        glBindVertexArray(0);
-    } else {
-        std::cout << "Error: VAO not initialized in TerrainRenderer::Draw" << std::endl;
-    }
-}
 
 void TerrainRenderer::initTerrainData()
 {

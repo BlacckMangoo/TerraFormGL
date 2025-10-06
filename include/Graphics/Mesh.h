@@ -5,6 +5,8 @@
 #include <vector>
 #include <Core/Camera.h>
 
+#include "Core/IClickable.h"
+
 struct MeshData {
     std::vector<glm::vec3> vertices ;
     std::vector<unsigned int> indices ;
@@ -40,7 +42,7 @@ public:
 
     Mesh(Transform transform, MeshData meshData, Shader* shader = nullptr , PhysicsProperties physicsProperties = PhysicsProperties(), glm::vec4 color = {0.8, 0.2, 0.3, 1.0});
     ~Mesh();
-    
+
     // Method to update vertex positions in the mesh
     void UpdateVertexPositions();
 

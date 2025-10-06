@@ -20,7 +20,7 @@ Shader ResourceManager::LoadShader(const char* vShaderFile, const char* fShaderF
 
 Shader& ResourceManager::GetShader(std::string name)
 {
-    return Shaders[name];
+  return Shaders[name];
 }
 
 Texture2D ResourceManager::LoadTexture(const char* file, bool alpha, std::string name)
@@ -77,7 +77,7 @@ Shader ResourceManager::loadShaderFromFile(const char* vShaderFile, const char* 
     }
     catch (std::exception e)
     {
-        std::cout << "ERROR::SHADER: Failed to read shader files" << std::endl;
+        std::cout << "ERROR::SHADER: Failed to read shader files: " << vShaderFile << ", " << fShaderFile << std::endl;
     }
     const char* vShaderCode = vertexCode.c_str();
     const char* fShaderCode = fragmentCode.c_str();
@@ -85,6 +85,12 @@ Shader ResourceManager::loadShaderFromFile(const char* vShaderFile, const char* 
     // 2. now create shader object from source code
     Shader shader;
     shader.Compile(vShaderCode, fShaderCode, gShaderFile != nullptr ? gShaderCode : nullptr);
+
+    // Basic sanity: if compilation didn't set ID, warn
+    if (shader.ID == 0) {
+        std::cerr << "ResourceManager::loadShaderFromFile - compiled shader has ID 0 (compile/link likely failed): "
+                  << vShaderFile << ", " << fShaderFile << std::endl;
+    }
     return shader;
 }
 

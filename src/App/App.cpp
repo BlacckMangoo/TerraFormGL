@@ -10,11 +10,13 @@
 #include <random>
 #include <memory>
 #include "../../include/Terrain/TerrainHeightFunctions.h"
+#include "../../include/Terrain/TerrainStrategy.h"
 #include "Graphics/MeshData.h"
 
 namespace {
-    TerrainRenderer terrainRenderer;
-    std::vector<Light*> lights;
+
+    std::vector<Light*>   lights ;
+    TerrainRenderer terrainRenderer ; 
 }
 
 App::App(unsigned int width, unsigned int height)
@@ -26,11 +28,7 @@ App::App(unsigned int width, unsigned int height)
 
 App::~App()
 {
-    // Cleanup allocated mesh
-    if (circleMesh) {
-        delete circleMesh;
-        circleMesh = nullptr;
-    }
+
 
     // Cleanup lights
     for (auto* l : lights) {
@@ -42,8 +40,10 @@ App::~App()
 
 void App::Init()
 {
+ 
 
-    // Load shaders
+
+    // Load shaders first so any subsequent Draw/Use calls have valid shader programs
     const std::string basePath = "../resources/shaders/";
     std::vector<std::string> shaderPaths = { "unlitShader","terrain","light","sprite"};
 
@@ -54,13 +54,25 @@ void App::Init()
         ResourceManager::LoadShader(vertPath.c_str(),fragPath.c_str(),nullptr,shaderPath);
     }
 
+   Shader terrainShader = ResourceManager::GetShader("terrain");
+   terrainShader.Use();
+
+   terrainRenderer = TerrainRenderer(terrainShader);
+
+    // Generate initial terrain using breathing blobs (time-based). We'll update it every frame in Update().
+    GraphFunctionStrategy graphStrat(TerrainHeightFunctions::breathingBlobs(time, 0.3f, 5));
+    // use the App's terrainRenderer member
+    terrainRenderer.GenerateTerrain(100, 100, 1.0f, &graphStrat);
+
+    // Create 3 distinct lights around the terrain
+    lights.push_back(new Light(glm::vec3(0.0f, 12.0f, 0.0f), glm::vec3(1.0f, 0.9f, 0.7f), 1.2f)); // warm overhead
+    lights.push_back(new Light(glm::vec3(12.0f, 6.0f, 6.0f), glm::vec3(0.6f, 0.8f, 1.0f), 0.8f)); // cool side
+    lights.push_back(new Light(glm::vec3(-10.0f, 6.0f, -8.0f), glm::vec3(0.6f, 1.0f, 0.6f), 0.8f)); // green rim
+
     glEnable(GL_DEPTH_TEST);
 
 
-    lights.push_back(new Light(glm::vec3(0.0f, 10.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f))); // White light
-    // Create debug circle mesh now that GL context should be initialized
-    MeshData circle = GenerateCircleMeshData(10.0f, 100, glm::vec3(0,0,0));
-    circleMesh = new Mesh(Transform{glm::vec3(0,0,0), glm::vec3(0,0,0), glm::vec3(0.1,0.1,0.1)}, circle);
+
 
 
 }
@@ -74,8 +86,14 @@ void App::Update(float dt) {
     camera.processInput(glfwGetCurrentContext(), dt);
     time += 1.0f * dt;
 
-    circleMesh->Update(dt);
+    // Regenerate terrain each frame using the current time so the blobs 'breathe'.
+    GraphFunctionStrategy dynamicStrat(TerrainHeightFunctions::breathingBlobs(time, 0.3f, 5));
+    terrainRenderer.GenerateTerrain(100, 100, 1.0f, &dynamicStrat);
 
+    Shader terrainShader = ResourceManager::GetShader("terrain");
+    terrainShader.Use();
+
+    terrainRenderer.DrawTerrain(RENDER_MODE_WIRE_FRAME, camera, lights);
 
 }
 
@@ -87,10 +105,14 @@ void App::Render()
     camera.updateViewMatrix();
     camera.cameraWindow->RenderUi(camera);
 
-
-    Shader lightShader = ResourceManager::GetShader("unlitShader");
+    Shader lightShader = ResourceManager::GetShader("light");
     lightShader.Use();
-    circleMesh->Draw(camera,lightShader);
+
+    for (auto& light : lights) {
+        light->Render(lightShader,camera);
+    }
+
+
 
 
 }

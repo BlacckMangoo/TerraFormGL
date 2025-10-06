@@ -12,7 +12,7 @@ class Light : public IClickable
 public:
     glm::vec3 position;  
     glm::vec3 color;
-    float radius; 
+    float radius;
     
     LightWindow* lightWindow;
 
@@ -35,12 +35,14 @@ public:
     // Set the radius for the light (both visual and for intersection)
     void SetRadius(float newRadius);
 
+    virtual bool IntersectsRay(const Ray& ray, float& tHit) const override;
+
+
 private:
     unsigned int VAO, VBO, EBO;
     bool initialized;
     
     void setupGeometry();
     
-    // Implementation of ray intersection for spherical bounds
-    virtual bool IntersectsRay(const Ray& ray, float& tHit) const override;
+
 };

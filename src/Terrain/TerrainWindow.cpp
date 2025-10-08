@@ -14,10 +14,10 @@ void TerrainWindow::RenderUi(const Camera& camera)
 	ImGui::Text("Basic Terrain Parameters");
 	ImGui::Separator();
 
-	if (ImGui::SliderInt("Width", &terrainWidth, 1, 1000)) {
+	if (ImGui::SliderInt("Width", &terrainWidth, 1, 3000)) {
 		regenerateTerrain = true;
 	}
-	if (ImGui::SliderInt("Height", &terrainHeight, 1, 1000)) {
+	if (ImGui::SliderInt("Height", &terrainHeight, 1, 3000)) {
 		regenerateTerrain = true;
 	}
 	if (ImGui::SliderFloat("Scale", &terrainScale, 0.1f, 5.0f)) {
